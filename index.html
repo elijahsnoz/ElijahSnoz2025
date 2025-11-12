@@ -35,6 +35,12 @@
     <!-- Analytics Tracker -->
     <script src="js/analytics-tracker.js" defer></script>
     
+    <!-- Image Optimizer for Fast Mobile Loading -->
+    <script src="js/image-optimizer.js" defer></script>
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" as="image" href="images/only-one.jpg" fetchpriority="high">
+    
     <!-- Structured Data (Schema.org) -->
     <script type="application/ld+json">
     {
@@ -371,7 +377,7 @@
             <!-- Gallery Grid -->
             <div class="gallery-grid">
                 <div class="gallery-item featured">
-                    <img src="images/only-one.jpg" alt="Only One" loading="lazy">
+                    <img src="images/only-one.jpg" alt="Only One" loading="eager" fetchpriority="high" width="800" height="600">
                     <div class="gallery-overlay">
                         <h3>Only One</h3>
                         <p>Mixed Media on Canvas</p>
@@ -380,7 +386,7 @@
                 </div>
                 
                 <div class="gallery-item">
-                    <img src="images/Studio picture/Art1.jpg" alt="Studio Artwork 1" loading="lazy">
+                    <img src="images/Studio picture/Art1.jpg" alt="Studio Artwork 1" loading="lazy" width="800" height="600">
                     <div class="gallery-overlay">
                         <h3>Studio Collection</h3>
                         <p>Original Artwork</p>
@@ -388,7 +394,7 @@
                 </div>
                 
                 <div class="gallery-item">
-                    <img src="images/Studio picture/Art2.JPG" alt="Studio Artwork 2" loading="lazy">
+                    <img src="images/Studio picture/Art2.JPG" alt="Studio Artwork 2" loading="lazy" width="800" height="600">
                     <div class="gallery-overlay">
                         <h3>Creative Expression</h3>
                         <p>Mixed Media</p>
