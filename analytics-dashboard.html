@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - Elijah Snoz Portfolio</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dashboard-container {
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            background: var(--bg-dark);
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-top: 80px;
+        }
+        
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(62, 207, 142, 0.3);
+        }
+        
+        .dashboard-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+        
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 10px rgba(62, 207, 142, 0.3));
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .stat-label {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .stat-trend {
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stat-trend.up {
+            color: var(--primary-color);
+        }
+        
+        .stat-trend.down {
+            color: #ff6b6b;
+        }
+        
+        .chart-section {
+            max-width: 1400px;
+            margin: 3rem auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+        
+        .chart-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .chart-header h2 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+        }
+        
+        .device-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .device-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-dark);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .device-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+        
+        .device-info {
+            flex: 1;
+        }
+        
+        .device-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .device-percentage {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .device-bar {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .device-bar-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            transition: width 1s ease;
+        }
+        
+        .recent-visitors {
+            max-width: 1400px;
+            margin: 3rem auto;
+        }
+        
+        .visitor-list {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .visitor-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .visitor-item:hover {
+            background: var(--bg-card-hover);
+        }
+        
+        .visitor-item:last-child {
+            border-bottom: none;
+        }
+        
+        .visitor-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .visitor-details h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            font-size: 1rem;
+        }
+        
+        .visitor-details p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .visitor-time {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-align: right;
+        }
+        
+        .refresh-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            border: none;
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+            z-index: 100;
+        }
+        
+        .refresh-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: var(--shadow-glow-hover);
+        }
+        
+        .refresh-btn:active {
+            transform: scale(0.95) rotate(90deg);
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-card {
+                padding: 1.5rem;
+            }
+            
+            .stat-value {
+                font-size: 2rem;
+            }
+            
+            .visitor-item {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .visitor-time {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="main-nav">
+    <div class="nav-container">
+        <a href="index.html" class="logo">Elijah Snoz</a>
+        <div class="nav-links">
+            <a href="index.html#about">About</a>
+            <a href="index.html#music">Music</a>
+            <a href="index.html#art">Art</a>
+            <a href="analytics-dashboard.html" style="color: var(--primary-color);">Analytics</a>
+        </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1><i class="fas fa-chart-line"></i> Analytics Dashboard</h1>
+        <p>Track your portfolio's performance in real-time</p>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.5rem;">
+            Last Updated: <span id="lastUpdate"></span>
+        </p>
+    </div>
+
+    <div class="container">
+        <!-- Key Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-value" id="totalVisitors">0</div>
+                <div class="stat-label">Total Visitors</div>
+                <div class="stat-trend up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span id="visitorTrend">0%</span> this week
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-eye"></i></div>
+                <div class="stat-value" id="pageViews">0</div>
+                <div class="stat-label">Page Views</div>
+                <div class="stat-trend up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span id="viewsTrend">0%</span> this week
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-mobile-alt"></i></div>
+                <div class="stat-value" id="mobilePercentage">0%</div>
+                <div class="stat-label">Mobile Users</div>
+                <div class="stat-trend">
+                    <span id="mobileCount">0</span> mobile visitors
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="stat-value" id="avgDuration">0m</div>
+                <div class="stat-label">Avg. Session Duration</div>
+                <div class="stat-trend up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span id="durationTrend">0%</span> increase
+                </div>
+            </div>
+        </div>
+
+        <!-- Device Breakdown -->
+        <div class="chart-section">
+            <div class="chart-header">
+                <h2><i class="fas fa-devices"></i> Device Breakdown</h2>
+            </div>
+            <div class="device-breakdown">
+                <div class="device-item">
+                    <div class="device-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="device-info">
+                        <div class="device-name">Mobile</div>
+                        <div class="device-percentage"><span id="mobilePercent">0</span>% of traffic</div>
+                        <div class="device-bar">
+                            <div class="device-bar-fill" id="mobileBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="device-item">
+                    <div class="device-icon"><i class="fas fa-tablet-alt"></i></div>
+                    <div class="device-info">
+                        <div class="device-name">Tablet</div>
+                        <div class="device-percentage"><span id="tabletPercent">0</span>% of traffic</div>
+                        <div class="device-bar">
+                            <div class="device-bar-fill" id="tabletBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="device-item">
+                    <div class="device-icon"><i class="fas fa-desktop"></i></div>
+                    <div class="device-info">
+                        <div class="device-name">Desktop</div>
+                        <div class="device-percentage"><span id="desktopPercent">0</span>% of traffic</div>
+                        <div class="device-bar">
+                            <div class="device-bar-fill" id="desktopBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popular Sections -->
+        <div class="chart-section">
+            <div class="chart-header">
+                <h2><i class="fas fa-fire"></i> Most Visited Sections</h2>
+            </div>
+            <div id="popularSections"></div>
+        </div>
+
+        <!-- Recent Visitors -->
+        <div class="recent-visitors">
+            <div class="chart-header">
+                <h2><i class="fas fa-user-clock"></i> Recent Visitors</h2>
+            </div>
+            <div class="visitor-list" id="visitorList">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Refresh Button -->
+<button class="refresh-btn" onclick="refreshDashboard()" title="Refresh Data">
+    <i class="fas fa-sync-alt"></i>
+</button>
+
+<script>
+// Analytics Engine
+const Analytics = {
+    // Initialize analytics
+    init() {
+        this.loadData();
+        this.updateDashboard();
+        // Auto-refresh every 30 seconds
+        setInterval(() => this.updateDashboard(), 30000);
+    },
+
+    // Load analytics data from localStorage
+    loadData() {
+        const defaultData = {
+            visitors: [],
+            pageViews: [],
+            sessions: [],
+            sections: {
+                music: 0,
+                art: 0,
+                videos: 0,
+                blog: 0,
+                about: 0
+            }
+        };
+        
+        const stored = localStorage.getItem('portfolioAnalytics');
+        return stored ? JSON.parse(stored) : defaultData;
+    },
+
+    // Save analytics data
+    saveData(data) {
+        localStorage.setItem('portfolioAnalytics', JSON.stringify(data));
+    },
+
+    // Get device type
+    getDeviceType() {
+        const ua = navigator.userAgent;
+        if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+            return 'tablet';
+        }
+        if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+            return 'mobile';
+        }
+        return 'desktop';
+    },
+
+    // Calculate device breakdown
+    getDeviceBreakdown() {
+        const data = this.loadData();
+        const total = data.visitors.length || 1;
+        const devices = { mobile: 0, tablet: 0, desktop: 0 };
+        
+        data.visitors.forEach(v => {
+            devices[v.device]++;
+        });
+        
+        return {
+            mobile: Math.round((devices.mobile / total) * 100),
+            tablet: Math.round((devices.tablet / total) * 100),
+            desktop: Math.round((devices.desktop / total) * 100),
+            counts: devices
+        };
+    },
+
+    // Get average session duration
+    getAvgDuration() {
+        const data = this.loadData();
+        if (data.sessions.length === 0) return 0;
+        
+        const total = data.sessions.reduce((sum, s) => sum + s.duration, 0);
+        return Math.round(total / data.sessions.length / 60); // Convert to minutes
+    },
+
+    // Update dashboard with latest data
+    updateDashboard() {
+        const data = this.loadData();
+        const deviceBreakdown = this.getDeviceBreakdown();
+        
+        // Update stats
+        document.getElementById('totalVisitors').textContent = data.visitors.length;
+        document.getElementById('pageViews').textContent = data.pageViews.length;
+        document.getElementById('mobilePercentage').textContent = deviceBreakdown.mobile + '%';
+        document.getElementById('mobileCount').textContent = deviceBreakdown.counts.mobile;
+        document.getElementById('avgDuration').textContent = this.getAvgDuration() + 'm';
+        
+        // Update trends (mock data for now)
+        document.getElementById('visitorTrend').textContent = '12.5%';
+        document.getElementById('viewsTrend').textContent = '8.3%';
+        document.getElementById('durationTrend').textContent = '15.2%';
+        
+        // Update device breakdown
+        document.getElementById('mobilePercent').textContent = deviceBreakdown.mobile;
+        document.getElementById('tabletPercent').textContent = deviceBreakdown.tablet;
+        document.getElementById('desktopPercent').textContent = deviceBreakdown.desktop;
+        
+        // Animate bars
+        setTimeout(() => {
+            document.getElementById('mobileBar').style.width = deviceBreakdown.mobile + '%';
+            document.getElementById('tabletBar').style.width = deviceBreakdown.tablet + '%';
+            document.getElementById('desktopBar').style.width = deviceBreakdown.desktop + '%';
+        }, 100);
+        
+        // Update popular sections
+        this.updatePopularSections(data.sections);
+        
+        // Update recent visitors
+        this.updateRecentVisitors(data.visitors);
+        
+        // Update timestamp
+        document.getElementById('lastUpdate').textContent = new Date().toLocaleString();
+    },
+
+    // Update popular sections chart
+    updatePopularSections(sections) {
+        const container = document.getElementById('popularSections');
+        const total = Object.values(sections).reduce((a, b) => a + b, 0) || 1;
+        
+        const sectionData = Object.entries(sections)
+            .map(([name, count]) => ({
+                name: name.charAt(0).toUpperCase() + name.slice(1),
+                count,
+                percentage: Math.round((count / total) * 100)
+            }))
+            .sort((a, b) => b.count - a.count);
+        
+        container.innerHTML = sectionData.map(section => `
+            <div class="device-item" style="margin-bottom: 1rem;">
+                <div class="device-icon"><i class="fas fa-${this.getSectionIcon(section.name.toLowerCase())}"></i></div>
+                <div class="device-info">
+                    <div class="device-name">${section.name} Section</div>
+                    <div class="device-percentage">${section.count} views (${section.percentage}%)</div>
+                    <div class="device-bar">
+                        <div class="device-bar-fill" style="width: ${section.percentage}%"></div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    },
+
+    // Get icon for section
+    getSectionIcon(section) {
+        const icons = {
+            music: 'music',
+            art: 'palette',
+            videos: 'video',
+            blog: 'blog',
+            about: 'user'
+        };
+        return icons[section] || 'eye';
+    },
+
+    // Update recent visitors list
+    updateRecentVisitors(visitors) {
+        const container = document.getElementById('visitorList');
+        const recentVisitors = visitors.slice(-10).reverse();
+        
+        if (recentVisitors.length === 0) {
+            container.innerHTML = `
+                <div class="visitor-item" style="justify-content: center;">
+                    <p style="color: var(--text-muted); text-align: center;">
+                        No visitors yet. Share your portfolio to start tracking!
+                    </p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = recentVisitors.map(visitor => `
+            <div class="visitor-item">
+                <div class="visitor-avatar">${visitor.id.slice(0, 2).toUpperCase()}</div>
+                <div class="visitor-details">
+                    <h4>Visitor ${visitor.id.slice(0, 8)}</h4>
+                    <p>
+                        <i class="fas fa-${visitor.device === 'mobile' ? 'mobile-alt' : visitor.device === 'tablet' ? 'tablet-alt' : 'desktop'}"></i>
+                        ${visitor.device.charAt(0).toUpperCase() + visitor.device.slice(1)} • 
+                        ${visitor.location || 'Unknown Location'}
+                    </p>
+                </div>
+                <div class="visitor-time">
+                    ${this.getTimeAgo(visitor.timestamp)}
+                </div>
+            </div>
+        `).join('');
+    },
+
+    // Get time ago string
+    getTimeAgo(timestamp) {
+        const seconds = Math.floor((Date.now() - timestamp) / 1000);
+        
+        if (seconds < 60) return 'Just now';
+        if (seconds < 3600) return Math.floor(seconds / 60) + ' min ago';
+        if (seconds < 86400) return Math.floor(seconds / 3600) + ' hours ago';
+        return Math.floor(seconds / 86400) + ' days ago';
+    }
+};
+
+// Refresh dashboard function
+function refreshDashboard() {
+    const btn = document.querySelector('.refresh-btn');
+    btn.style.animation = 'spin 0.5s ease';
+    Analytics.updateDashboard();
+    setTimeout(() => {
+        btn.style.animation = '';
+    }, 500);
+}
+
+// Initialize dashboard on load
+document.addEventListener('DOMContentLoaded', () => {
+    Analytics.init();
+});
+</script>
+
+</body>
+</html>
