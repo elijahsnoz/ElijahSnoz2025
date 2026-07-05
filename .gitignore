@@ -1,9 +1,22 @@
-# Large media files (upload directly to hosting platform)
-music/
-videos/
-images/LOF01*.jpg
+# ── Large original video masters ──────────────────────────────
+# Web-optimized *-web.mp4 versions are committed instead. Originals
+# stay on your local disk but are kept out of the repo (GitHub 100MB
+# limit + faster Netlify deploys).
+videos/Blog/_DSC6347.MOV
+videos/Blog/_DSC6348.MOV
+videos/Blog/_DSC6349.MOV
+videos/Blog/model video/VTMT FINAL 2.MP4
+videos/Blog/model video/utput_2019-10-15_09-41-19.MOV
+music/9 SONGS/Music performance/IMG_4984.MOV
 
-# OS files
+# Empty duplicate PDF
+images/new image/ipadabo by Elijah.pdf
+
+# Unused HEIC originals (not web-displayable)
+*.HEIC
+*.heic
+
+# ── OS / editor cruft ─────────────────────────────────────────
 .DS_Store
 .DS_Store?
 ._*
@@ -11,10 +24,9 @@ images/LOF01*.jpg
 .Trashes
 ehthumbs.db
 Thumbs.db
-
-# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+*.log

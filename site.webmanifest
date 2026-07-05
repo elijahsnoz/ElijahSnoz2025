@@ -1,0 +1,14 @@
+{
+  "name": "Elijah Snoz — Atunbi",
+  "short_name": "Elijah Snoz",
+  "description": "Painter, musician & creative technologist. The Atunbi movement.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#04030e",
+  "theme_color": "#04030e",
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "images/only-one.jpg", "sizes": "512x512", "type": "image/jpeg" }
+  ]
+}
