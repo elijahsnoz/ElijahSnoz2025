@@ -569,6 +569,17 @@ a { color: inherit; }
 .newsletter-form input:focus { outline: none; border-color: var(--glass-border-hover); box-shadow: var(--glow-violet); }
 .newsletter-note { font-size: .8rem; color: var(--text-muted); margin-top: 1rem; }
 
+.press-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; max-width: 900px; margin: 0 auto; }
+.press-card { display: flex; flex-direction: column; padding: 1.8rem; text-decoration: none; color: var(--text);
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+.press-card:hover { transform: translateY(-4px); box-shadow: var(--glow-violet); border-color: var(--glass-border-hover); }
+.press-source { font-family: 'Orbitron', sans-serif; font-size: .72rem; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: .8rem; }
+.press-card h3 { font-size: 1.2rem; line-height: 1.35; margin-bottom: .6rem; }
+.press-card p { color: var(--text-soft); font-size: .95rem; margin-bottom: 1.2rem; flex: 1; }
+.press-link { color: var(--cyan); font-weight: 600; font-size: .9rem; }
+.press-link i { font-size: .78rem; margin-left: .3rem; }
+
 .support { margin-top: 2.5rem; padding: 2rem; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center;
     background: radial-gradient(120% 120% at 0% 0%, rgba(255,214,107,.16), transparent 55%), var(--surface); }
 .support-qr { width: 160px; height: 160px; border-radius: 16px; background: #fff; padding: 8px; flex: 0 0 auto; }
