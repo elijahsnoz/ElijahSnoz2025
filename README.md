@@ -1,6 +1,10 @@
 # Elijah Snoz - Art & Music 2025 🎨🎵
 
-Welcome to the official repository for Elijah Snoz's personal website!  
+## 🌍 Live Site: **[elijahsnoz.me](https://elijahsnoz.me)**
+
+[![Visit elijahsnoz.me](https://img.shields.io/badge/Visit-elijahsnoz.me-ffd66b?style=for-the-badge&logo=firefox&logoColor=black)](https://elijahsnoz.me)
+
+Welcome to the official repository for Elijah Snoz's personal website — **[elijahsnoz.me](https://elijahsnoz.me)**.
 This project showcases Elijah's exceptional talents in art and music, featuring a gallery of artworks, a music player for tracks, event updates, and links to shop for exclusive merchandise.
 
 ---
