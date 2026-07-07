@@ -50,6 +50,7 @@
     <link rel="manifest" href="site.webmanifest">
 
     <script src="js/image-optimizer.js" defer></script>
+    <script src="js/analytics-events.js" defer></script>
     <!-- Solana support widget controller. Module + defer = no blockchain code
          loads until a visitor clicks "Connect Wallet". See /docs/SOLANA.md -->
     <script type="module" src="js/solana/support.js" defer></script>
@@ -899,6 +900,7 @@
                     method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form),
                 });
                 if (!res.ok) throw new Error('failed');
+                if (window.gtag) gtag('event', 'newsletter_signup', { method: 'formspree' });
                 form.reset();
                 setNote('🚀 Welcome to the Snoz Universe — you are in orbit.');
             } catch {

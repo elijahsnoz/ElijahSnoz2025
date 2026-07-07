@@ -52,6 +52,7 @@ if (root) {
   const doConnect = async (name) => {
     try {
       const { address } = await sol.connect(name);
+      if (typeof window.gtag === 'function') gtag('event', 'wallet_connect', { wallet: name || 'default' });
       unsub = sol.onWalletEvents({
         onDisconnect: renderDisconnected,
         onAccountChanged: (a) => (a ? renderConnected(a) : renderDisconnected()),
@@ -106,6 +107,7 @@ if (root) {
     say('Confirm the transaction in your wallet…');
     try {
       const { url } = await sol.sendSol(amountInput.value);
+      if (typeof window.gtag === 'function') gtag('event', 'sol_support', { value: Number(amountInput.value) || 0, currency: 'SOL' });
       msg.innerHTML = `✅ Thank you! <a href="${url}" target="_blank" rel="noopener">View transaction</a>`;
       msg.dataset.kind = 'success';
     } catch (err) {
