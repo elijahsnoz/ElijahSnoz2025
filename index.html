@@ -675,7 +675,15 @@
                  Paste a free auto-updating Instagram embed here (from Behold.so,
                  SnapWidget or LightWidget) to replace the teaser below.
                  When code is present, the fallback grid hides automatically. -->
-            <div class="ig-embed" data-ig-embed></div>
+            <div class="ig-embed" data-ig-embed>
+                <behold-widget feed-id="7sSuDWREcF2b7onqbUed"></behold-widget>
+                <script>
+                  (() => {
+                    const d = document, s = d.createElement("script"); s.type = "module";
+                    s.src = "https://w.behold.so/widget.js"; d.head.append(s);
+                  })();
+                </script>
+            </div>
 
             <!-- Fallback teaser (shows until a live widget is connected) -->
             <div class="ig-fallback" data-ig-fallback>
