@@ -43,7 +43,9 @@ required to browse.
 
 ## Features
 
-1. **Wallet connection** — optional; supports injected wallets (Phantom, Solflare, Backpack).
+1. **Wallet connection** — optional; uses the **Wallet Standard**, so any compliant
+   Solana wallet works: **MetaMask (Solana)**, Phantom, Solflare, Backpack. If more than
+   one is installed, the widget shows a picker.
 2. **Solana identity** — shows address, live network, connection status, disconnect.
 3. **Support the artist** — send SOL directly to Elijah. No tokens, staking, or speculation.
 4. **Digital collectibles (future-ready)** — `collectibles.js` exposes `listCollectibles()`
@@ -65,9 +67,9 @@ export const RECIPIENT_ADDRESS = '';       // → set Elijah's receiving wallet
 
 - **Devnet (default):** for development/testing. Fund a test wallet at
   <https://faucet.solana.com>. Use a devnet address for `RECIPIENT_ADDRESS`.
-- **Mainnet:** set `NETWORK = 'mainnet-beta'` **and** a real `RECIPIENT_ADDRESS`
-  you control. For production traffic, also replace the public mainnet RPC in
-  `config.js` with a dedicated endpoint (Helius/QuickNode/Triton) to avoid rate limits.
+- **Mainnet (current):** `NETWORK = 'mainnet-beta'`, `RECIPIENT_ADDRESS` set, and a
+  dedicated **Helius** RPC configured in `config.js` (avoids public-endpoint rate limits).
+  Rotate the Helius key by editing the mainnet RPC string.
 
 Until `RECIPIENT_ADDRESS` is set, "Send SOL" fails gracefully with a friendly
 "check back soon" message — nothing breaks.

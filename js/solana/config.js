@@ -8,14 +8,20 @@
 // 'devnet' during development, 'mainnet-beta' for production.
 export const NETWORK = 'mainnet-beta';
 
-// Public RPC endpoints. For production traffic, swap the mainnet value for a
-// dedicated RPC (Helius, QuickNode, Triton…) — the public endpoint is rate-limited.
+// RPC endpoints. Mainnet uses a dedicated Helius endpoint (rate-limit friendly).
 const RPC = {
   'devnet': 'https://api.devnet.solana.com',
-  'mainnet-beta': 'https://api.mainnet-beta.solana.com',
+  'mainnet-beta': 'https://mainnet.helius-rpc.com/?api-key=cba71949-5982-4ebf-8619-15060ecafd98',
   'testnet': 'https://api.testnet.solana.com',
 };
 export const RPC_ENDPOINT = RPC[NETWORK];
+
+// Wallet Standard chain identifier (CAIP-2 style) for the active network.
+export const WALLET_STANDARD_CHAIN = {
+  'mainnet-beta': 'solana:mainnet',
+  'devnet': 'solana:devnet',
+  'testnet': 'solana:testnet',
+}[NETWORK];
 
 /**
  * Elijah's receiving wallet address.
