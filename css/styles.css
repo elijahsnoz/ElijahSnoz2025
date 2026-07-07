@@ -505,6 +505,18 @@ a { color: inherit; }
 .lightbox .lb-inquire { position: absolute; bottom: 3.4rem; left: 50%; transform: translateX(-50%);
     font-size: .85rem; padding: .55rem 1.2rem; white-space: nowrap; }
 
+/* Instagram feed */
+.ig-embed:empty { display: none; }
+.ig-fallback { display: grid; grid-template-columns: repeat(6, 1fr); gap: .6rem; max-width: 900px; margin: 0 auto; }
+.ig-tile { position: relative; aspect-ratio: 1 / 1; overflow: hidden; border-radius: 12px; display: block; }
+.ig-tile img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.ig-tile:hover img { transform: scale(1.08); }
+.ig-ov { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff;
+    background: rgba(4,3,14,.35); opacity: 0; transition: opacity .25s ease; font-size: 1.4rem; }
+.ig-tile:hover .ig-ov { opacity: 1; }
+.ig-cta { text-align: center; margin-top: 1.6rem; }
+@media (max-width: 700px) { .ig-fallback { grid-template-columns: repeat(3, 1fr); } }
+
 /* Gallery collect / commission CTA */
 .gallery-collect { text-align: center; margin-top: 2.8rem; }
 .gallery-collect h3 { font-size: 1.6rem; margin-bottom: .5rem; }
