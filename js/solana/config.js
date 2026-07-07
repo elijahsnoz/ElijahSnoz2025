@@ -6,7 +6,7 @@
  */
 
 // 'devnet' during development, 'mainnet-beta' for production.
-export const NETWORK = 'devnet';
+export const NETWORK = 'mainnet-beta';
 
 // Public RPC endpoints. For production traffic, swap the mainnet value for a
 // dedicated RPC (Helius, QuickNode, Triton…) — the public endpoint is rate-limited.
