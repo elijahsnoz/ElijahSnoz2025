@@ -24,7 +24,7 @@ export const RPC_ENDPOINT = RPC[NETWORK];
  *  - For production, set a mainnet address you control.
  * Leave empty to keep the Send button in a friendly "coming soon" state.
  */
-export const RECIPIENT_ADDRESS = '';
+export const RECIPIENT_ADDRESS = 'D2CGZPYA9R23wYVkmymXKVHpw8MWG17ggvMp6JXVkYEA';
 
 // Known genesis hashes — used to detect which network a wallet is actually on.
 export const GENESIS_HASHES = {
