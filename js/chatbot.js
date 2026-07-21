@@ -1,5 +1,5 @@
 /* ============================================================
-   Ask Elijah — Atunbi Assistant
+   Ask Elijah — Planet-B Assistant
    A lightweight, offline, browser-only assistant. It answers
    questions about Elijah Snoz from a built-in knowledge base
    (sourced from this site). When it can't answer, it offers a
@@ -21,7 +21,7 @@
       answer:
         "<strong>Elijah Snoz</strong> (also known as <em>Ajayi VII</em>, signed <em>@Ajayivii</em>) is a painter, musician, and creative technologist. " +
         "He works at the intersection of art, music, technology, and innovation — building ideas that shape culture. " +
-        "He's the founder of the <strong>Atunbi</strong> movement — <em>Rebirth</em>."
+        "He's the founder of the <strong>Planet-B</strong> movement — <em>Rebirth</em>."
     },
     {
       id: "companies",
@@ -32,11 +32,11 @@
         "Across them he blends art, music, technology, and innovation to create meaningful experiences."
     },
     {
-      id: "atunbi",
-      keywords: ["atunbi", "rebirth", "movement", "reborn", "world of rebirth", "meaning"],
+      id: "planet-b",
+      keywords: ["planet-b", "atunbi", "rebirth", "movement", "reborn", "world of rebirth", "meaning"],
       answer:
-        "<strong>Atunbi</strong> means <em>“Rebirth.”</em> It's a movement Elijah is building — a <em>World of Rebirth</em> " +
-        "inspired by his new works and the sound of Ajayi VII, for every reborn soul on earth. Welcome to Atunbi. 🌀"
+        "<strong>Planet-B</strong> is a world of <em>rebirth</em>. It's a movement Elijah is building — a <em>World of Rebirth</em> " +
+        "inspired by his new works and the sound of Ajayi VII, for every reborn soul on earth. Welcome to Planet-B. 🌀"
     },
     {
       id: "buy-art",
@@ -78,7 +78,7 @@
       keywords: ["exhibition", "exhibit", "show", "solo", "nike", "nike art gallery", "when", "where", "event", "opening", "2026", "april"],
       answer:
         "Elijah's <strong>first solo exhibition</strong> opens at the <strong>Nike Art Gallery</strong> on <strong>April 21st, 2026</strong> — " +
-        "a full-scale journey through the Atunbi universe. See details in the <a href=\"#journal\">Journal</a> section. 🌟"
+        "a full-scale journey through the Planet-B universe. See details in the <a href=\"#journal\">Journal</a> section. 🌟"
     },
     {
       id: "catalogue",
@@ -111,7 +111,7 @@
       id: "origin",
       keywords: ["from", "origin", "born", "nigeria", "nigerian", "ile-ife", "ile ife", "where is he from", "based", "location", "country"],
       answer:
-        "Elijah's roots trace to <strong>Ile-Ife, Nigeria</strong> — the cradle of his neo-expressionist style and bold African colour, now expanding into the Atunbi universe."
+        "Elijah's roots trace to <strong>Ile-Ife, Nigeria</strong> — the cradle of his neo-expressionist style and bold African colour, now expanding into the Planet-B universe."
     },
     {
       id: "name",
@@ -159,18 +159,18 @@
 
   function respond(question) {
     var text = normalize(question);
-    if (hasAny(text, THANKS)) return "Anytime! 😊 Anything else about Elijah's art, music or the Atunbi movement?";
-    if (hasAny(text, BYE)) return "Take care — and welcome to Atunbi. 🌀 Come back anytime.";
+    if (hasAny(text, THANKS)) return "Anytime! 😊 Anything else about Elijah's art, music or the Planet-B movement?";
+    if (hasAny(text, BYE)) return "Take care — and welcome to Planet-B. 🌀 Come back anytime.";
     var m = bestMatch(question);
     if (m.topic && m.score > 0) return m.topic.answer;
-    if (hasAny(text, GREETINGS)) return "Hey there! 👋 I'm the Atunbi Assistant. Ask me anything about Elijah Snoz — his paintings, music, the exhibition, or how to get in touch.";
+    if (hasAny(text, GREETINGS)) return "Hey there! 👋 I'm the Planet-B Assistant. Ask me anything about Elijah Snoz — his paintings, music, the exhibition, or how to get in touch.";
     return fallback(question);
   }
 
   /* ---------- UI ---------- */
   var SUGGESTIONS = [
     "Who is Elijah Snoz?",
-    "Tell me about Atunbi",
+    "Tell me about Planet-B",
     "Where is the exhibition?",
     "How can I buy his art?",
     "How do I book him?"
@@ -195,13 +195,13 @@
     panel.innerHTML =
       '<div class="ask-head">' +
         '<span class="ask-orb"></span>' +
-        '<div class="ask-head-txt"><strong>Ask Elijah</strong><small>Atunbi Assistant · always on</small></div>' +
+        '<div class="ask-head-txt"><strong>Ask Elijah</strong><small>Planet-B Assistant · always on</small></div>' +
         '<button class="ask-close" aria-label="Close chat"><i class="fas fa-times"></i></button>' +
       '</div>' +
       '<div class="ask-log" id="askLog"></div>' +
       '<div class="ask-chips" id="askChips"></div>' +
       '<form class="ask-input" id="askForm">' +
-        '<input id="askText" type="text" autocomplete="off" placeholder="Ask about art, music, Atunbi…" aria-label="Type your question">' +
+        '<input id="askText" type="text" autocomplete="off" placeholder="Ask about art, music, Planet-B…" aria-label="Type your question">' +
         '<button type="submit" aria-label="Send"><i class="fas fa-paper-plane"></i></button>' +
       '</form>';
 
@@ -267,7 +267,7 @@
       launcher.classList.add("hidden");
       if (!greeted) {
         greeted = true;
-        addBot("Hi! 👋 I'm the <strong>Atunbi Assistant</strong>. Ask me anything about Elijah Snoz — his paintings, music, the exhibition, or how to reach him. If I don't know, I'll point you to Google or to Elijah himself. 🌀", true);
+        addBot("Hi! 👋 I'm the <strong>Planet-B Assistant</strong>. Ask me anything about Elijah Snoz — his paintings, music, the exhibition, or how to reach him. If I don't know, I'll point you to Google or to Elijah himself. 🌀", true);
       }
       setTimeout(function () { input.focus(); }, 300);
     }

@@ -206,7 +206,7 @@ a { color: inherit; }
     position: relative; z-index: 2;
     max-width: 1240px; margin: 0 auto; padding: 0 1.6rem; width: 100%;
 }
-/* Atunbi background video */
+/* Planet-B background video */
 .hero-video {
     position: absolute; inset: 0; z-index: 0;
     width: 100%; height: 100%; object-fit: cover;
@@ -742,7 +742,7 @@ a { color: inherit; }
     html { scroll-behavior: auto; }
 }
 
-/* ============ Ask Elijah — Atunbi Assistant ============ */
+/* ============ Ask Elijah — Planet-B Assistant ============ */
 .ask-launcher {
     position: fixed; bottom: 1.4rem; right: 1.4rem; z-index: 900;
     display: inline-flex; align-items: center; gap: .55rem;
@@ -862,7 +862,7 @@ img, video, iframe { max-width: 100%; }
     .social-orbit a { width: 48px; height: 48px; font-size: 1.2rem; }
     .fb-social a { padding: .35rem; display: inline-flex; }
     .footer-col a, .mobile-menu a { min-height: 44px; display: flex; align-items: center; }
-    /* Long Atunbi kicker must wrap cleanly, not overflow or clip */
+    /* Long Planet-B kicker must wrap cleanly, not overflow or clip */
     .hero-kicker {
         display: block; white-space: normal; text-align: center;
         letter-spacing: .12em; font-size: .62rem; line-height: 1.7;
