@@ -1,0 +1,22 @@
+# Render Blueprint for the AI Music Lab backend (FastAPI + Demucs).
+# This is the ONLY thing in this repo that Render deploys — the main
+# elijahsnoz.me static site is unaffected and stays on Vercel.
+#
+# To use: on render.com, "New +" -> "Blueprint" -> connect this repo.
+# Render will read this file automatically.
+#
+# Demucs/torch need real memory headroom — the free tier's ~512MB RAM
+# is not enough and will OOM. Pick at least the Standard plan (or your
+# account's equivalent 2GB+ RAM tier) when setting this up, not the plan
+# value below (left as a safe starting point, adjust in the dashboard).
+services:
+  - type: web
+    name: ai-music-lab-backend
+    runtime: docker
+    rootDir: ai-music-lab/backend
+    dockerfilePath: Dockerfile
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: DEMUCS_MODEL
+        value: htdemucs
