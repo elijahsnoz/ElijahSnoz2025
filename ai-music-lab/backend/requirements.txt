@@ -1,0 +1,16 @@
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30,<1.0
+python-multipart>=0.0.9
+certifi
+
+# Pinned exactly: demucs>4.0.1 pulls in `sphn`, a Rust extension that only
+# ships arm64 wheels for macOS (and can fail to build from source on x86_64
+# due to an unrelated pip/pyproject_hooks bug). 4.0.1 doesn't depend on it
+# and is a fully supported, stable release for 4-stem htdemucs separation.
+demucs==4.0.1
+
+# demucs==4.0.1 doesn't pin this itself, so pip otherwise picks the newest
+# NumPy (2.x). torch==2.2.2 (pulled in by demucs) was built against NumPy
+# 1.x's C-API — under NumPy 2.x, torch<->numpy interop breaks with
+# "RuntimeError: Numpy is not available" as soon as Demucs loads audio.
+numpy<2

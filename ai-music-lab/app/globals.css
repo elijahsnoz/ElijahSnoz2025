@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@theme {
+  --color-void: #04030e;
+  --color-void-2: #080718;
+  --color-surface: #14122e;
+  --color-violet: #a855f7;
+  --color-violet-2: #7c3aed;
+  --color-magenta: #ff5db1;
+  --color-cyan: #38e1ff;
+  --color-aurora: #3ecf8e;
+  --color-gold: #ffd66b;
+  --color-glass: #9682ff;
+
+  --color-text: #ecebff;
+  --color-text-soft: #a9abd0;
+  --color-text-muted: #6d6f95;
+
+  --font-display: var(--font-display), "Space Grotesk", sans-serif;
+  --font-body: var(--font-body), "Inter", sans-serif;
+  --font-mono: var(--font-mono), "Orbitron", monospace;
+}
+
+@layer utilities {
+  .border-glass {
+    border-color: color-mix(in srgb, var(--color-glass) 16%, transparent);
+  }
+  .border-glass-hover {
+    border-color: color-mix(in srgb, var(--color-glass) 50%, transparent);
+  }
+}
+
+body {
+  background: var(--color-void);
+}
