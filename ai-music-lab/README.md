@@ -135,16 +135,29 @@ build time so production doesn't pay that cost on the first request.
 
 ## Deploying
 
-**Backend (Render)** — connect this repo on render.com via "New +" →
-"Blueprint"; it reads `/render.yaml` automatically and deploys
-`ai-music-backend/` from its Dockerfile. Demucs/torch need real memory —
-pick at least a 2GB+ RAM plan, the free tier will OOM. Note the resulting
-service URL (e.g. `https://ai-music-lab-backend.onrender.com`).
+**Backend (Railway — current choice)** — Railway requires an interactive
+browser login (`railway login`), so this can't be provisioned headlessly;
+`ai-music-backend/railway.json` is prepared so the dashboard setup is close
+to one-click:
+
+1. railway.app → "New Project" → "Deploy from GitHub repo" → this repo.
+2. Set the service's **Root Directory** to `ai-music-backend` (this is a
+   monorepo — Railway needs to be told explicitly, unlike a single-app repo).
+   It will pick up `railway.json` from there (Dockerfile build, `/health`
+   healthcheck).
+3. Pick a plan/instance size with **2GB+ RAM** — Demucs/torch will OOM on
+   anything smaller.
+4. Deploy, then note the generated public domain (Settings → Networking →
+   "Generate Domain"), e.g. `https://ai-music-backend-production.up.railway.app`.
+
+**Backend (Render — alternative)** — `render.yaml` at the repo root still
+works if you'd rather use Render instead: "New +" → "Blueprint" → connect
+this repo, same 2GB+ RAM requirement.
 
 **Frontend (Vercel)** — deploy `ai-music-lab/` as its **own** Vercel project
 (Root Directory = `ai-music-lab`), separate from the main `elijahsnoz.me`
-project. Set `BACKEND_URL` in that project's environment variables to the
-Render URL above.
+project. Set `BACKEND_URL` in that project's environment variables to
+whichever backend URL you end up with above.
 
 Once that project has a real domain, connect it to `elijahsnoz.me/ai` by
 adding a rewrite to the **existing** root `vercel.json` — this is the one
