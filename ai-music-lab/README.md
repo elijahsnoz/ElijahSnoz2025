@@ -3,7 +3,8 @@
 Elijah Snoz's personal AI music production laboratory. Version 1 (MVP) does one
 thing well: upload a demo, separate it into vocals/drums/bass/other with
 Demucs, and let you play or download every stem — no download required to
-listen.
+listen. Marketed as a free stem splitter for fans, with AI mastering teased
+as "coming soon."
 
 This app is **fully isolated** from the main `elijahsnoz.me` static site (a
 plain HTML/CSS/JS project at the repo root). It has its own `package.json`,
@@ -22,36 +23,49 @@ Browser
 Next.js App Router  ──app/ai/page.tsx (UI) + app/api/* (thin proxy routes)
   │  (server-to-server fetch, BACKEND_URL env var, never exposed to the client)
   ▼
-FastAPI service (/backend)
+FastAPI service (../ai-music-backend)
   │  validate (ffprobe) → run Demucs (subprocess) → zip stems → serve/stream
   ▼
 Local disk (storage/{job_id}/...)
 ```
 
+This repo has **two separate deployables**, siblings at the repo root:
+
+- `ai-music-lab/` — this Next.js app (deployed to its own Vercel project)
+- `ai-music-backend/` — the FastAPI + Demucs service (deployed to Render, see
+  `/render.yaml`)
+
+They are siblings, **not** nested, on purpose: Vercel's CLI actively scans a
+project directory for service manifests (a `requirements.txt` + Python
+entrypoint reads as "there's a FastAPI service here") and will inject it into
+`vercel.json` as a second deployable — even across a `.vercelignore` entry or
+an explicit single-service `vercel.json`. The only reliable way to stop it
+from trying to bundle Demucs/torch into a Vercel serverless function (and
+failing — the bundle is ~4.7GB against a 500MB limit) was to physically move
+the backend out of the directory tree Vercel's CLI walks.
+
 - **Why a separate backend instead of Vercel serverless functions?** Demucs
   needs PyTorch, downloads ~80MB of model weights, and can take anywhere from
   10s to a couple of minutes per song on CPU. That's incompatible with
-  serverless function size/time limits. The FastAPI service is a normal
-  long-running process (Docker image included) meant to run on something like
-  Render, Railway, Fly.io, or your own VPS — anywhere that isn't serverless.
+  serverless function size/time limits regardless of the point above.
 - **Why does the frontend proxy through `/api/*` instead of calling the
   backend directly?** So the backend's URL is never exposed to the browser,
   and so this page can later add auth/rate-limiting at the Next.js layer
   without touching the backend.
-- **Job store is in-memory** (`backend/app/jobs.py`). Fine for a single
-  instance MVP. The first thing to change when this needs to scale past one
-  backend instance, or persist upload history, is swapping that for
+- **Job store is in-memory** (`ai-music-backend/app/jobs.py`). Fine for a
+  single instance MVP. The first thing to change when this needs to scale
+  past one backend instance, or persist upload history, is swapping that for
   Supabase/Postgres or Redis — noted here, not built yet.
 
 ## File structure
 
 ```
-ai-music-lab/
+ai-music-lab/            (Next.js frontend — deployed to Vercel)
   app/
     layout.tsx            root layout, fonts, metadata
     page.tsx               redirects "/" → "/ai"
     ai/
-      layout.tsx           <ai>-scoped metadata (title/description)
+      layout.tsx           <ai>-scoped metadata + SEO (title/description/JSON-LD)
       page.tsx              the AI Music Lab page (hero + upload + progress + stems)
     api/
       upload/route.ts       proxies multipart upload to the backend
@@ -68,13 +82,16 @@ ai-music-lab/
     upload.ts                 validation, XHR upload w/ progress, polling, URL builders
     audio.ts                  formatTime/formatBytes
     backend.ts                 server-only BACKEND_URL
-  backend/
-    app/
-      main.py                 FastAPI app: /upload /process /status /download
-      config.py, jobs.py, storage.py
-      audio_validation.py      ffprobe-based validation (catches spoofed extensions)
-      demucs_runner.py          runs Demucs as a subprocess
-    requirements.txt, Dockerfile, .dockerignore, .env.example
+
+ai-music-backend/         (FastAPI + Demucs — deployed to Render)
+  app/
+    main.py                  FastAPI app: /upload /process /status /download
+    config.py, jobs.py, storage.py
+    audio_validation.py       ffprobe-based validation (catches spoofed extensions)
+    demucs_runner.py           runs Demucs as a subprocess, streams live progress
+  requirements.txt, Dockerfile, .dockerignore, .env.example
+
+render.yaml                (repo root — Render Blueprint for ai-music-backend)
 ```
 
 ## Running locally
@@ -91,7 +108,7 @@ npm run dev
 **Backend** (needs Python 3.11+ and `ffmpeg` on PATH)
 
 ```bash
-cd ai-music-lab/backend
+cd ai-music-backend
 python3 -m venv .venv && source .venv/bin/activate
 pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
 cp .env.example .env
@@ -118,10 +135,16 @@ build time so production doesn't pay that cost on the first request.
 
 ## Deploying
 
-**Frontend** — deploy `ai-music-lab/` as its **own** Vercel project (Root
-Directory = `ai-music-lab`), separate from the main `elijahsnoz.me` project.
-Set `BACKEND_URL` in that project's environment variables to your deployed
-FastAPI URL.
+**Backend (Render)** — connect this repo on render.com via "New +" →
+"Blueprint"; it reads `/render.yaml` automatically and deploys
+`ai-music-backend/` from its Dockerfile. Demucs/torch need real memory —
+pick at least a 2GB+ RAM plan, the free tier will OOM. Note the resulting
+service URL (e.g. `https://ai-music-lab-backend.onrender.com`).
+
+**Frontend (Vercel)** — deploy `ai-music-lab/` as its **own** Vercel project
+(Root Directory = `ai-music-lab`), separate from the main `elijahsnoz.me`
+project. Set `BACKEND_URL` in that project's environment variables to the
+Render URL above.
 
 Once that project has a real domain, connect it to `elijahsnoz.me/ai` by
 adding a rewrite to the **existing** root `vercel.json` — this is the one
@@ -137,22 +160,11 @@ intentional touch point into the main site's config, and it's additive only
 }
 ```
 
-This wasn't added automatically because the destination domain doesn't exist
-until you create that second Vercel project — an unresolvable placeholder
-would have made `/ai` 404/error on the live site instead of simply not
-existing yet.
-
-**Backend** — build and deploy the Docker image in `backend/` to Render,
-Railway, Fly.io, or a VPS. It needs: enough RAM for Demucs (2GB+ recommended),
-`ffmpeg` on the image (already in the Dockerfile), and a persistent-ish disk
-for `STORAGE_DIR` (ephemeral is fine for MVP — jobs don't need to survive a
-restart yet).
-
 ## Security / validation
 
 Enforced both client-side (`lib/upload.ts`, immediate feedback) and
-server-side (`app/api/upload/route.ts` and `backend/app/main.py`, the
-authoritative check):
+server-side (`app/api/upload/route.ts` and `ai-music-backend/app/main.py`,
+the authoritative check):
 
 - Extension allow-list: `.mp3`, `.wav`, `.flac`
 - Max upload size: 60MB (`MAX_FILE_SIZE_BYTES`, mirrored in both layers)

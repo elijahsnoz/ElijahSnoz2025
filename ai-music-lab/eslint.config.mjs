@@ -12,8 +12,6 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // The Python backend (including its local .venv) isn't frontend code.
-    "backend/**",
   ]),
 ]);
 

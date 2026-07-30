@@ -13,7 +13,7 @@ services:
   - type: web
     name: ai-music-lab-backend
     runtime: docker
-    rootDir: ai-music-lab/backend
+    rootDir: ai-music-backend
     dockerfilePath: Dockerfile
     plan: starter
     healthCheckPath: /health
