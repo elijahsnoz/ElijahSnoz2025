@@ -463,6 +463,21 @@ a { color: inherit; }
 .platform-card.soundcloud i { color: #FF7700; }
 
 /* ---------- Gallery ---------- */
+/* Featured single-work spotlight (links out to a dedicated artwork page) */
+.featured-work {
+    display: grid; grid-template-columns: 240px 1fr; gap: 1.8rem; align-items: center;
+    background: var(--surface); border: 1px solid var(--glass-border); border-radius: var(--radius);
+    padding: 1.7rem; margin-bottom: 2.4rem; transition: var(--transition);
+}
+.featured-work:hover { border-color: var(--glass-border-hover); box-shadow: var(--glow-violet); }
+.featured-work .fw-img { border-radius: 14px; overflow: hidden; border: 1px solid var(--glass-border); }
+.featured-work .fw-img img { width: 100%; display: block; }
+.featured-work .fw-tag { display: inline-flex; align-items: center; gap: .4rem; font-family: var(--font-mono);
+    font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin-bottom: .6rem; }
+.featured-work h3 { font-size: 1.5rem; margin-bottom: .5rem; }
+.featured-work p { color: var(--text-soft); margin-bottom: 1.1rem; }
+@media (max-width: 640px) { .featured-work { grid-template-columns: 1fr; text-align: center; } }
+
 .gallery-grid {
     display: grid; grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: 240px; gap: 1.1rem; grid-auto-flow: dense;
