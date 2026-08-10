@@ -1,0 +1,8 @@
+{
+  "name": "ajayi-ar-scripts",
+  "private": true,
+  "description": "Isolated deps for the local content-authoring tools (compile-target.mjs, extract-layers.mjs). Kept out of the app's own package.json so Vercel's build never has to compile canvas's native module — run `npm install` in this directory once before using either script.",
+  "dependencies": {
+    "canvas": "^2.11.2"
+  }
+}

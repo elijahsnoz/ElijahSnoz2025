@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0a0a0c;
+  --color-ink-soft: #3a3a40;
+  --color-paper: #fbfaf7;
+  --color-paper-dim: #f1efe9;
+  --color-indigo: #16204f;
+  --color-indigo-deep: #060a1f;
+  --color-line: rgba(10, 10, 12, 0.12);
+  --color-line-invert: rgba(251, 250, 247, 0.18);
+
+  --font-display: var(--font-display), "Fraunces", Georgia, serif;
+  --font-body: var(--font-body), "Inter", sans-serif;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+@layer utilities {
+  .border-hairline {
+    border-color: var(--color-line);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe-only {
+    animation: none !important;
+    transition: none !important;
+  }
+}

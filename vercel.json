@@ -7,7 +7,14 @@
     { "source": "/api/upload", "destination": "https://ai-music-lab-sooty.vercel.app/api/upload" },
     { "source": "/api/process", "destination": "https://ai-music-lab-sooty.vercel.app/api/process" },
     { "source": "/api/download", "destination": "https://ai-music-lab-sooty.vercel.app/api/download" },
-    { "source": "/_next/:path*", "destination": "https://ai-music-lab-sooty.vercel.app/_next/:path*" }
+    { "source": "/api/vocal-fx/process", "destination": "https://ai-music-lab-sooty.vercel.app/api/vocal-fx/process" },
+    { "source": "/api/vocal-fx/status", "destination": "https://ai-music-lab-sooty.vercel.app/api/vocal-fx/status" },
+    { "source": "/api/vocal-fx/download", "destination": "https://ai-music-lab-sooty.vercel.app/api/vocal-fx/download" },
+    { "source": "/_next/:path*", "destination": "https://ai-music-lab-sooty.vercel.app/_next/:path*" },
+    { "source": "/ar", "destination": "https://ajayi-ar.vercel.app/ar" },
+    { "source": "/ar/:path*", "destination": "https://ajayi-ar.vercel.app/ar/:path*" },
+    { "source": "/art", "destination": "https://ajayi-ar.vercel.app/art" },
+    { "source": "/art/:path*", "destination": "https://ajayi-ar.vercel.app/art/:path*" }
   ],
   "headers": [
     {

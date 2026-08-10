@@ -1,0 +1,7 @@
+{
+  "name": "canvas-stub",
+  "version": "2.11.2",
+  "private": true,
+  "description": "Pure-JS stand-in for node-canvas, used only to satisfy mind-ar's own package.json listing canvas as a regular dependency. mind-ar's prebuilt browser dist (dist/mindar-image-three.prod.js — the only file this app imports) never actually calls into it; the real thing only has to exist for scripts/*.mjs, which resolve their own copy from scripts/node_modules (see scripts/package.json) and never touch this stub.",
+  "main": "index.js"
+}

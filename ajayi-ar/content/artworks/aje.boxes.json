@@ -1,0 +1,40 @@
+{
+  "sun": { "rect": { "x": 0.0, "y": 0.0, "width": 0.19, "height": 0.16 } },
+  "cloud": { "rect": { "x": 0.08, "y": 0.0, "width": 0.27, "height": 0.13 } },
+  "sky-dot": { "rect": { "x": 0.29, "y": 0.0, "width": 0.09, "height": 0.08 } },
+  "star": { "rect": { "x": 0.53, "y": 0.0, "width": 0.14, "height": 0.11 } },
+  "triangle": { "rect": { "x": 0.84, "y": 0.0, "width": 0.16, "height": 0.12 } },
+  "green-circle-top": { "rect": { "x": 0.84, "y": 0.08, "width": 0.13, "height": 0.11 } },
+  "grey-sphere": { "rect": { "x": 0.57, "y": 0.10, "width": 0.16, "height": 0.17 } },
+  "eye": { "rect": { "x": 0.0, "y": 0.15, "width": 0.10, "height": 0.10 } },
+  "bird": { "rect": { "x": 0.06, "y": 0.11, "width": 0.17, "height": 0.11 } },
+  "teardrop": { "rect": { "x": 0.0, "y": 0.21, "width": 0.09, "height": 0.13 } },
+  "figure-vessel-bearer": {
+    "rect": { "x": 0.36, "y": 0.12, "width": 0.21, "height": 0.21 },
+    "mode": "keepLowSaturation"
+  },
+  "land-brown-left": { "rect": { "x": 0.10, "y": 0.03, "width": 0.22, "height": 0.32 } },
+  "land-blue-center": { "rect": { "x": 0.27, "y": 0.0, "width": 0.26, "height": 0.35 } },
+  "land-green-center": { "rect": { "x": 0.45, "y": 0.0, "width": 0.23, "height": 0.33 } },
+  "land-brown-right": { "rect": { "x": 0.62, "y": 0.0, "width": 0.36, "height": 0.33 } },
+  "land-red-ribbon": { "rect": { "x": 0.62, "y": 0.21, "width": 0.37, "height": 0.19 } },
+  "figure-left": {
+    "rect": { "x": 0.02, "y": 0.30, "width": 0.21, "height": 0.25 },
+    "mode": "keepLowSaturation"
+  },
+  "figure-right": {
+    "rect": { "x": 0.72, "y": 0.31, "width": 0.24, "height": 0.32 },
+    "mode": "keepLowSaturation"
+  },
+  "whale-form": {
+    "rect": { "x": 0.29, "y": 0.28, "width": 0.44, "height": 0.17 },
+    "mode": "keepLowSaturation"
+  },
+  "plants-left": { "rect": { "x": 0.24, "y": 0.53, "width": 0.10, "height": 0.16 } },
+  "plants-right": { "rect": { "x": 0.60, "y": 0.50, "width": 0.10, "height": 0.18 } },
+  "fish": { "rect": { "x": 0.36, "y": 0.86, "width": 0.22, "height": 0.13 } },
+  "boat": { "rect": { "x": 0.0, "y": 0.75, "width": 0.20, "height": 0.20 } },
+  "vase": { "rect": { "x": 0.82, "y": 0.78, "width": 0.16, "height": 0.20 } },
+  "orange-bar": { "rect": { "x": 0.0, "y": 0.35, "width": 0.10, "height": 0.30 } },
+  "orange-circle": { "rect": { "x": 0.0, "y": 0.58, "width": 0.10, "height": 0.13 } }
+}

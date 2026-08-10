@@ -1,0 +1,38 @@
+{
+  "name": "ajayi-ar",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "compile-target": "node scripts/compile-target.mjs",
+    "layers:report": "node scripts/extract-layers.mjs report",
+    "layers:extract": "node scripts/extract-layers.mjs extract",
+    "layers:boxes": "node scripts/extract-layers.mjs boxes"
+  },
+  "dependencies": {
+    "next": "16.2.12",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "three": "0.160.0",
+    "mind-ar": "1.2.5",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/three": "0.160.0",
+    "@types/qrcode": "^1.5.5",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.12",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "overrides": {
+    "canvas": "file:./vendor/canvas-stub"
+  }
+}
