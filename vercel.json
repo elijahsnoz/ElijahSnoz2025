@@ -14,7 +14,11 @@
     { "source": "/ar", "destination": "https://ajayi-ar.vercel.app/ar" },
     { "source": "/ar/:path*", "destination": "https://ajayi-ar.vercel.app/ar/:path*" },
     { "source": "/art", "destination": "https://ajayi-ar.vercel.app/art" },
-    { "source": "/art/:path*", "destination": "https://ajayi-ar.vercel.app/art/:path*" }
+    { "source": "/art/:path*", "destination": "https://ajayi-ar.vercel.app/art/:path*" },
+    { "source": "/targets/:path*", "destination": "https://ajayi-ar.vercel.app/targets/:path*" },
+    { "source": "/layers/:path*", "destination": "https://ajayi-ar.vercel.app/layers/:path*" },
+    { "source": "/artworks/:path*", "destination": "https://ajayi-ar.vercel.app/artworks/:path*" },
+    { "source": "/audio/:path*", "destination": "https://ajayi-ar.vercel.app/audio/:path*" }
   ],
   "headers": [
     {
