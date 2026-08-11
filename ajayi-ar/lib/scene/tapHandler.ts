@@ -5,6 +5,9 @@ export interface ScreenTapHit {
   hit: TapHit;
   screenX: number;
   screenY: number;
+  /** The AR/Digital view's own rendered size — not window.innerWidth/innerHeight, which don't reliably match it on mobile. Use these to keep a popup anchored to this tap inside the actual view bounds. */
+  containerWidth: number;
+  containerHeight: number;
 }
 
 /**
@@ -34,7 +37,7 @@ export function attachTapHandler(
     const projected = hit.point.clone().project(camera);
     const screenX = (projected.x * 0.5 + 0.5) * rect.width;
     const screenY = (1 - (projected.y * 0.5 + 0.5)) * rect.height;
-    onHit({ hit, screenX, screenY });
+    onHit({ hit, screenX, screenY, containerWidth: rect.width, containerHeight: rect.height });
   }
 
   container.addEventListener("pointerdown", handlePointerDown);

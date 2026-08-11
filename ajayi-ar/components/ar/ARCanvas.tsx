@@ -70,6 +70,13 @@ export default function ARCanvas({
         if (disposed) return;
         mindarThree = instance;
 
+        // alpha:true (set inside MindARThree's own constructor) only makes the
+        // canvas *capable* of transparency — it still clears each frame to
+        // opaque black unless we also zero the clear alpha. Without this, the
+        // live camera feed is completely hidden behind solid black wherever
+        // no sprite is drawn.
+        instance.renderer.setClearColor(0x000000, 0);
+
         const anchor = instance.addAnchor(0);
         const textureLoader = new THREE.TextureLoader();
         const scene = buildPaintingScene(artwork, textureLoader, reducedMotion);

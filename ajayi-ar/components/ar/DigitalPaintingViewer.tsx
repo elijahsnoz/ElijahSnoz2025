@@ -40,6 +40,7 @@ export default function DigitalPaintingViewer({ artwork, reducedMotion, classNam
     camera.position.z = 1;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setClearColor(0x000000, 0); // alpha:true alone still clears to opaque black otherwise
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(container.clientWidth, container.clientHeight);
     container.appendChild(renderer.domElement);

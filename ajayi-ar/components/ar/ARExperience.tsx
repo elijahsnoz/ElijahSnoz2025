@@ -31,12 +31,14 @@ export default function ARExperience({ artwork }: Props) {
   const reducedMotion = useReducedMotion();
   const sound = useAmbientAudio(artwork.audio);
 
-  const handleSymbolTap = useCallback(({ hit, screenX, screenY }: ScreenTapHit) => {
+  const handleSymbolTap = useCallback(({ hit, screenX, screenY, containerWidth, containerHeight }: ScreenTapHit) => {
     setActiveSymbol((prev) => ({
       label: hit.label,
       meaning: hit.meaning,
       x: screenX,
       y: screenY,
+      containerWidth,
+      containerHeight,
       key: (prev?.key ?? 0) + 1,
     }));
   }, []);

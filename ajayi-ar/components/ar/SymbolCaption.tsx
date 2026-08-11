@@ -7,6 +7,9 @@ export interface ActiveSymbol {
   meaning: string;
   x: number;
   y: number;
+  /** The AR/Digital view's actual rendered size, for clamping the popup on-screen — not window.innerWidth/innerHeight, which don't reliably match it on mobile. */
+  containerWidth: number;
+  containerHeight: number;
   /** Bumped on every tap, including re-tapping the same symbol, to restart the auto-dismiss timer. */
   key: number;
 }
@@ -40,12 +43,16 @@ export default function SymbolCaption({ symbol, onDismiss }: Props) {
 
   if (!symbol) return null;
 
-  const left = Math.min(Math.max(symbol.x, 90), (typeof window !== "undefined" ? window.innerWidth : 400) - 90);
-  const placeAbove = symbol.y > 140;
+  const bubbleHalfWidth = 90;
+  const left =
+    symbol.containerWidth <= bubbleHalfWidth * 2
+      ? symbol.containerWidth / 2
+      : Math.min(Math.max(symbol.x, bubbleHalfWidth), symbol.containerWidth - bubbleHalfWidth);
+  const placeAbove = symbol.y > symbol.containerHeight * 0.2;
 
   return (
     <div
-      className={`pointer-events-none absolute z-20 w-[180px] -translate-x-1/2 text-center transition-all duration-300 ${
+      className={`pointer-events-none absolute z-20 w-[180px] text-center transition-all duration-300 ${
         visible ? "opacity-100" : "opacity-0"
       }`}
       style={{

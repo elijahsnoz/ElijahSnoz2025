@@ -31,8 +31,11 @@ export function useAmbientAudio(audio: AudioConfig) {
       el.pause();
       setOn(false);
     } else {
-      el.play().catch(() => undefined);
-      setOn(true);
+      // Only claim "on" if playback actually starts — e.g. a missing/404
+      // audio file should leave the control visibly off, not lie about it.
+      el.play()
+        .then(() => setOn(true))
+        .catch(() => setOn(false));
     }
   }
 

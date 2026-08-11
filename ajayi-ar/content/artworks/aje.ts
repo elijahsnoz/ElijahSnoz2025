@@ -411,9 +411,12 @@ export const aje: ArtworkConfig = {
     },
   ],
   audio: {
-    enabled: true,
+    // TODO: flip to true once /audio/aje-ambient.mp3 actually exists — until
+    // then this correctly hides the Sound control rather than showing one
+    // that can never turn on.
+    enabled: false,
     defaultOn: false,
-    source: "/audio/aje-ambient.mp3", // TODO: add ambient water/atmosphere loop
+    source: "/audio/aje-ambient.mp3",
     volume: 0.5,
     loop: true,
   },
