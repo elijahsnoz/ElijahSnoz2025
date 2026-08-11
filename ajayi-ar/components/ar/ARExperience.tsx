@@ -101,7 +101,7 @@ export default function ARExperience({ artwork }: Props) {
   }
 
   return (
-    <div className="relative h-[100dvh] w-full overflow-hidden bg-ink">
+    <div className="relative h-[100dvh] w-full overflow-hidden">
       <ARCanvas
         artwork={artwork}
         reducedMotion={reducedMotion}

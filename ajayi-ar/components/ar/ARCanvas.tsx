@@ -132,5 +132,17 @@ export default function ARCanvas({
     // callbacks are read through callbacksRef so they don't need to be dependencies.
   }, [artwork, reducedMotion]);
 
-  return <div ref={containerRef} className="absolute inset-0 [&_video]:h-full [&_video]:w-full [&_video]:object-cover" />;
+  // `isolate` gives this container its own stacking context, so MindAR's
+  // negatively z-indexed <video> (meant to sit just behind our WebGL
+  // canvas) can only ever be compared against siblings *inside* this div —
+  // it can't end up behind an ancestor's own background (e.g. the parent
+  // page wrapper), which is exactly what was hiding the camera feed behind
+  // solid black on a real device despite the WebGL canvas itself already
+  // clearing to transparent.
+  return (
+    <div
+      ref={containerRef}
+      className="absolute inset-0 isolate [&_video]:h-full [&_video]:w-full [&_video]:object-cover"
+    />
+  );
 }
