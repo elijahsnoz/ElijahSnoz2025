@@ -165,6 +165,7 @@ function labelComponents(bgMask, width, height) {
     let area = 0;
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
 
+    const componentStart = head; // queue[componentStart..tail-1] is exactly this component's pixels once the BFS below finishes
     while (head < tail) {
       const idx = queue[head++];
       const x = idx % width;
@@ -175,21 +176,31 @@ function labelComponents(bgMask, width, height) {
       if (y < minY) minY = y;
       if (y > maxY) maxY = y;
 
-      const neighbors = [
-        [x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1],
-      ];
-      for (const [nx, ny] of neighbors) {
-        if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
-        const nIdx = ny * width + nx;
-        if (bgMask[nIdx] === 1 || labels[nIdx] !== 0) continue;
-        labels[nIdx] = nextLabel;
-        queue[tail++] = nIdx;
+      // Inlined 4-neighbor check (no per-pixel array allocation — this runs millions of times on a dense photo).
+      if (x + 1 < width) {
+        const nIdx = y * width + (x + 1);
+        if (bgMask[nIdx] !== 1 && labels[nIdx] === 0) { labels[nIdx] = nextLabel; queue[tail++] = nIdx; }
+      }
+      if (x - 1 >= 0) {
+        const nIdx = y * width + (x - 1);
+        if (bgMask[nIdx] !== 1 && labels[nIdx] === 0) { labels[nIdx] = nextLabel; queue[tail++] = nIdx; }
+      }
+      if (y + 1 < height) {
+        const nIdx = (y + 1) * width + x;
+        if (bgMask[nIdx] !== 1 && labels[nIdx] === 0) { labels[nIdx] = nextLabel; queue[tail++] = nIdx; }
+      }
+      if (y - 1 >= 0) {
+        const nIdx = (y - 1) * width + x;
+        if (bgMask[nIdx] !== 1 && labels[nIdx] === 0) { labels[nIdx] = nextLabel; queue[tail++] = nIdx; }
       }
     }
 
     if (area < MIN_COMPONENT_AREA) {
-      // too small to matter — fold back into background so it doesn't clutter the report
-      for (let i = 0; i < width * height; i++) if (labels[i] === nextLabel) labels[i] = 0;
+      // Too small to matter — fold back into background. Reset only this component's own
+      // pixels (still sitting in queue[componentStart..tail-1]), not a full-image rescan —
+      // with thousands of small stray components on a busy photo, an O(width*height) rescan
+      // per prune turns into O(components * pixels) and can hang for minutes.
+      for (let i = componentStart; i < tail; i++) labels[queue[i]] = 0;
       nextLabel--;
       continue;
     }

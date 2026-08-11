@@ -19,26 +19,38 @@ the `.mind` target compiler, the automatic layer-extraction pipeline
 (`scripts/extract-layers.mjs`), sound/info/QR/SEO — all implemented and
 verified (see "What's been tested" below).
 
-**`aje` ("Ajé", 2026, acrylic on canvas, 3 × 4 ft) is done.** Real source
-photo (cropped to just the canvas — see `public/artworks/aje/
-source-gallery-full.png` for the original gallery installation shot the
-artist provided), a real compiled `.mind` target, and all 26 layers cut
-automatically by `scripts/extract-layers.mjs` from
-`content/artworks/aje.boxes.json` (a fractional bounding box per layer —
-see that file and "Adding a new painting" below for how it works). The
-water shader, sun/star/eye glow, figure sway, land-form breathing, fish
-swim, and boat bob all render correctly over the real painting in Digital
-mode, verified in a real browser.
+**Two artworks are done: `aje` and `the-watchful-eye`.** Both have a real
+source photo, a real compiled `.mind` target, layers cut by
+`scripts/extract-layers.mjs` from a checked-in `content/artworks/
+<slug>.boxes.json`, real `meaning` captions per layer, and combined,
+energetic animations (per artist direction — an early pass was too
+subtle to read as "alive," see git history) — all verified rendering
+correctly over the real artwork in Digital mode in a real browser.
 
-Still missing: an ambient audio file (optional — sound is off by default
-regardless). Search `content/artworks/aje.ts` for `TODO`.
+- **`aje`** ("Ajé", 2026, acrylic on canvas, 3 × 4 ft) — a flat painting;
+  26 layers, water shader, sun/star/eye glow, figure sway, land-form
+  breathing, fish swim, boat bob.
+- **`the-watchful-eye`** ("The Watchful Eye", 2026, discarded items
+  assemblage, 61 × 61 cm) — a photographed 3D found-object collage, a
+  meaningfully different medium from `aje`; see the file-level comment
+  in `content/artworks/the-watchful-eye.ts` for why it needed a
+  different extraction approach (mostly `boxes` mode, several layers
+  needing `keepLowSaturation`) and what didn't separate cleanly (the
+  mouse/circuit-board/one bottle-cap-flower sit against patterned fabric
+  with no clean background to key off, so they carry more visible noise
+  at their edges than the layers sitting on the piece's blue mat).
+  Metadata and the artist statement are real, pulled directly from
+  <https://planet-b.tech/artworks/the-watchful-eye>, not a guess.
 
-A few layers whose neighbors sit very close (figure-right/plants-right,
-orange-bar/figure-left) carry a faint trace of the neighboring shape at
-their edges — a known limitation of box-based extraction on a busy
-composition, documented in `aje.ts`. At the subtle animation amplitudes
-used throughout it reads as imperceptible; worth a manual touch-up only
-if a specific layer looks visibly off on a real device.
+Both still missing: an ambient audio file (optional — sound is off by
+default regardless, and hidden entirely via `audio.enabled: false` until
+one exists). Search either artwork's config for `TODO`.
+
+Both have a few layers whose neighbors sit very close carrying a faint
+trace of the neighboring shape at their edges — a known limitation of
+box-based extraction on a busy composition, documented per-artwork.
+Worth a manual touch-up only if a specific layer looks visibly off on a
+real device.
 
 ## Running locally
 

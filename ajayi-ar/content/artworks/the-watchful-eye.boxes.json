@@ -1,0 +1,114 @@
+{
+  "spiral-symbol": {
+    "rect": {
+      "x": 0.0,
+      "y": 0.02,
+      "width": 0.15,
+      "height": 0.13
+    },
+    "mode": "keepLowSaturation",
+    "maxSaturation": 45
+  },
+  "eye-pupil": {
+    "rect": {
+      "x": 0.21,
+      "y": 0.18,
+      "width": 0.16,
+      "height": 0.15
+    }
+  },
+  "watch": {
+    "rect": {
+      "x": 0.0,
+      "y": 0.8,
+      "width": 0.2,
+      "height": 0.2
+    },
+    "mode": "keepLowSaturation",
+    "maxSaturation": 60
+  },
+  "mouse": {
+    "rect": {
+      "x": 0.78,
+      "y": 0.13,
+      "width": 0.22,
+      "height": 0.22
+    },
+    "mode": "keepLowSaturation",
+    "maxSaturation": 55
+  },
+  "led-circuit-board": {
+    "rect": {
+      "x": 0.66,
+      "y": 0.13,
+      "width": 0.16,
+      "height": 0.19
+    },
+    "mode": "keepLowSaturation",
+    "maxSaturation": 55
+  },
+  "pinwheel-yellow-green": {
+    "rect": {
+      "x": 0.58,
+      "y": 0.31,
+      "width": 0.14,
+      "height": 0.13
+    }
+  },
+  "pinwheel-red-yellow": {
+    "rect": {
+      "x": 0.83,
+      "y": 0.31,
+      "width": 0.16,
+      "height": 0.14
+    }
+  },
+  "pinwheel-blue": {
+    "rect": {
+      "x": 0.86,
+      "y": 0.44,
+      "width": 0.14,
+      "height": 0.14
+    }
+  },
+  "chain": {
+    "rect": {
+      "x": 0.66,
+      "y": 0.38,
+      "width": 0.28,
+      "height": 0.2
+    }
+  },
+  "yellow-block": {
+    "rect": {
+      "x": 0.8,
+      "y": 0.46,
+      "width": 0.2,
+      "height": 0.14
+    }
+  },
+  "pinwheel-pink": {
+    "rect": {
+      "x": 0.8,
+      "y": 0.56,
+      "width": 0.18,
+      "height": 0.18
+    }
+  },
+  "bottle-cap-ring": {
+    "rect": {
+      "x": 0.2,
+      "y": 0.54,
+      "width": 0.44,
+      "height": 0.36
+    }
+  },
+  "led-strip-board": {
+    "rect": {
+      "x": 0.5,
+      "y": 0.72,
+      "width": 0.5,
+      "height": 0.24
+    }
+  }
+}
