@@ -6,10 +6,12 @@ import type { ArtworkConfig } from "@/lib/types";
 import { checkARSupport } from "@/lib/arSupport";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { useAmbientAudio } from "@/lib/useAmbientAudio";
+import type { ScreenTapHit } from "@/lib/scene/tapHandler";
 import LandingScreen from "./LandingScreen";
 import ControlsBar from "./ControlsBar";
 import DetectionToast from "./DetectionToast";
 import InfoPanel from "./InfoPanel";
+import SymbolCaption, { type ActiveSymbol } from "./SymbolCaption";
 
 const ARCanvas = dynamic(() => import("./ARCanvas"), { ssr: false });
 const DigitalPaintingViewer = dynamic(() => import("./DigitalPaintingViewer"), { ssr: false });
@@ -25,8 +27,19 @@ export default function ARExperience({ artwork }: Props) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [detectedKey, setDetectedKey] = useState(0);
   const [infoOpen, setInfoOpen] = useState(false);
+  const [activeSymbol, setActiveSymbol] = useState<ActiveSymbol | null>(null);
   const reducedMotion = useReducedMotion();
   const sound = useAmbientAudio(artwork.audio);
+
+  const handleSymbolTap = useCallback(({ hit, screenX, screenY }: ScreenTapHit) => {
+    setActiveSymbol((prev) => ({
+      label: hit.label,
+      meaning: hit.meaning,
+      x: screenX,
+      y: screenY,
+      key: (prev?.key ?? 0) + 1,
+    }));
+  }, []);
 
   const handleEnter = useCallback(() => {
     const support = checkARSupport();
@@ -67,13 +80,19 @@ export default function ARExperience({ artwork }: Props) {
   if (stage === "digital") {
     return (
       <div className="relative min-h-[100dvh] bg-indigo-deep">
-        <DigitalPaintingViewer artwork={artwork} reducedMotion={reducedMotion} className="h-[100dvh] w-full" />
+        <DigitalPaintingViewer
+          artwork={artwork}
+          reducedMotion={reducedMotion}
+          className="h-[100dvh] w-full"
+          onSymbolTap={handleSymbolTap}
+        />
         <div className="absolute inset-x-0 top-0 flex items-center justify-between px-6 py-5 text-paper">
           <p className="text-[11px] tracking-[0.25em] uppercase">{artwork.title} · Digital Mode</p>
           <button type="button" onClick={() => setInfoOpen(true)} className="text-[11px] tracking-[0.2em] uppercase underline">
             Info
           </button>
         </div>
+        <SymbolCaption symbol={activeSymbol} onDismiss={() => setActiveSymbol(null)} />
         <InfoPanel artwork={artwork} open={infoOpen} onClose={() => setInfoOpen(false)} />
       </div>
     );
@@ -88,6 +107,7 @@ export default function ARExperience({ artwork }: Props) {
         onTargetLost={handleTargetLost}
         onError={handleError}
         onReady={() => undefined}
+        onSymbolTap={handleSymbolTap}
       />
       <DetectionToast triggerKey={detectedKey} />
       <ControlsBar
@@ -97,6 +117,7 @@ export default function ARExperience({ artwork }: Props) {
         onToggleInfo={() => setInfoOpen((v) => !v)}
         onExit={() => setStage("landing")}
       />
+      <SymbolCaption symbol={activeSymbol} onDismiss={() => setActiveSymbol(null)} />
       <InfoPanel artwork={artwork} open={infoOpen} onClose={() => setInfoOpen(false)} />
     </div>
   );

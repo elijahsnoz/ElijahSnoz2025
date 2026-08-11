@@ -32,8 +32,11 @@ export interface SpriteLayerConfig {
   rect: LayerRect;
   /** Small stacking offset (toward camera), keep tiny (e.g. 0.001–0.02) to stay flush with the painting. */
   depth?: number;
-  animation: AnimationBehavior;
-  reducedMotion?: AnimationBehavior;
+  /** One behavior, or several combined (e.g. sway + bob at once) for richer motion. */
+  animation: AnimationBehavior | AnimationBehavior[];
+  reducedMotion?: AnimationBehavior | AnimationBehavior[];
+  /** Shown in a small popup where the visitor taps, if they tap this element. */
+  meaning?: string;
 }
 
 export interface WaterLayerConfig {
@@ -47,6 +50,8 @@ export interface WaterLayerConfig {
   waveAmplitude: number;
   waveSpeed: number;
   shimmerOpacity: number;
+  /** Shown in a small popup where the visitor taps, if they tap this element. */
+  meaning?: string;
 }
 
 export interface ParticleLayerConfig {

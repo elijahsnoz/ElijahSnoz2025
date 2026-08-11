@@ -5,11 +5,13 @@ import * as THREE from "three";
 import type { ArtworkConfig } from "@/lib/types";
 import { paintingAspect } from "@/lib/scene/coords";
 import { buildPaintingScene } from "@/lib/scene/buildScene";
+import { attachTapHandler, type ScreenTapHit } from "@/lib/scene/tapHandler";
 
 interface Props {
   artwork: ArtworkConfig;
   reducedMotion: boolean;
   className?: string;
+  onSymbolTap?: (hit: ScreenTapHit) => void;
 }
 
 /**
@@ -18,7 +20,11 @@ interface Props {
  * anchor tracking. Used as the fallback when a device can't run AR, and
  * from the artwork archive pages.
  */
-export default function DigitalPaintingViewer({ artwork, reducedMotion, className }: Props) {
+export default function DigitalPaintingViewer({ artwork, reducedMotion, className, onSymbolTap }: Props) {
+  const onSymbolTapRef = useRef(onSymbolTap);
+  useEffect(() => {
+    onSymbolTapRef.current = onSymbolTap;
+  });
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -74,9 +80,14 @@ export default function DigitalPaintingViewer({ artwork, reducedMotion, classNam
     }
     window.addEventListener("resize", handleResize);
 
+    const detachTapHandler = attachTapHandler(container, () => camera, paintingScene, (screenHit) =>
+      onSymbolTapRef.current?.(screenHit)
+    );
+
     return () => {
       cancelAnimationFrame(frameId);
       window.removeEventListener("resize", handleResize);
+      detachTapHandler();
       paintingScene.dispose();
       backgroundTexture.dispose();
       renderer.dispose();

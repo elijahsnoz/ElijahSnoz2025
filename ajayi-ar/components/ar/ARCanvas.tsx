@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import type { ArtworkConfig } from "@/lib/types";
 import { buildPaintingScene, type PaintingScene } from "@/lib/scene/buildScene";
+import { attachTapHandler, type ScreenTapHit } from "@/lib/scene/tapHandler";
 import type { MindARThree } from "mind-ar/dist/mindar-image-three.prod.js";
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
   onTargetLost: () => void;
   onError: (message: string) => void;
   onReady: () => void;
+  onSymbolTap: (hit: ScreenTapHit) => void;
 }
 
 /**
@@ -23,12 +25,20 @@ interface Props {
  * anchor.group's matrix aligned to it every frame; we never touch that
  * matrix ourselves.
  */
-export default function ARCanvas({ artwork, reducedMotion, onTargetFound, onTargetLost, onError, onReady }: Props) {
+export default function ARCanvas({
+  artwork,
+  reducedMotion,
+  onTargetFound,
+  onTargetLost,
+  onError,
+  onReady,
+  onSymbolTap,
+}: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const callbacksRef = useRef({ onTargetFound, onTargetLost, onError, onReady });
+  const callbacksRef = useRef({ onTargetFound, onTargetLost, onError, onReady, onSymbolTap });
 
   useEffect(() => {
-    callbacksRef.current = { onTargetFound, onTargetLost, onError, onReady };
+    callbacksRef.current = { onTargetFound, onTargetLost, onError, onReady, onSymbolTap };
   });
 
   useEffect(() => {
@@ -39,6 +49,7 @@ export default function ARCanvas({ artwork, reducedMotion, onTargetFound, onTarg
     let frameId = 0;
     let mindarThree: MindARThree | null = null;
     let paintingScene: PaintingScene | null = null;
+    let detachTapHandler: (() => void) | null = null;
 
     (async () => {
       try {
@@ -75,6 +86,13 @@ export default function ARCanvas({ artwork, reducedMotion, onTargetFound, onTarg
         }
         callbacksRef.current.onReady();
 
+        detachTapHandler = attachTapHandler(
+          container,
+          () => instance.camera,
+          scene,
+          (screenHit) => callbacksRef.current.onSymbolTap(screenHit)
+        );
+
         const clock = new THREE.Clock();
         const animate = () => {
           const elapsed = clock.getElapsedTime();
@@ -93,6 +111,7 @@ export default function ARCanvas({ artwork, reducedMotion, onTargetFound, onTarg
     return () => {
       disposed = true;
       cancelAnimationFrame(frameId);
+      detachTapHandler?.();
       paintingScene?.dispose();
       if (mindarThree) {
         try {

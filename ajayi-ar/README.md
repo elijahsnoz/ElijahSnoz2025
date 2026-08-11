@@ -58,6 +58,27 @@ without a physical printout of the target image in front of the camera.
 `ARExperience.tsx`'s `stage` state machine) is the fastest way to
 iterate on layer positioning/animation without a camera at all.
 
+## Tap a symbol, it explains itself
+
+Every sprite layer can carry a `meaning` string. Tap that element (in AR
+or Digital mode) and a caption bubble appears right at the tap point
+naming it and giving a short interpretive line, then fades after a few
+seconds — `lib/scene/tapHandler.ts` raycasts against the same meshes
+`buildPaintingScene` built, `SymbolCaption.tsx` renders the popup.
+`aje.ts`'s captions are a first draft written from the painting's visual
+content, not the artist's own explanation — treat them as a starting
+point to edit into his words.
+
+## Combining behaviors for richer motion
+
+A layer's `animation` can be one behavior or an array of them, applied
+together (e.g. `[{ type: "sway", ... }, { type: "bob", ... }]`) —
+`lib/scene/behaviors.ts` sums position/rotation deltas and multiplies
+scale/opacity factors across the list rather than each behavior
+resetting the transform. This is what gives elements like the fish
+(swim + bob) or the sun (pulse + breathe) a livelier, less mechanical
+feel than any single behavior produces alone.
+
 ## How the coordinate system works
 
 Everything in `lib/scene/` is written against one convention: a layer's

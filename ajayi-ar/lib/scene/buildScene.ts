@@ -5,10 +5,18 @@ import { applySpriteBehavior, type SpriteBase } from "./behaviors";
 import { createWaterMaterial, updateWaterMaterial } from "./waterMaterial";
 import { createFallingParticles, createGlowParticles, type ParticleSystem } from "./particles";
 
+export interface TapHit {
+  label: string;
+  meaning: string;
+  point: THREE.Vector3;
+}
+
 export interface PaintingScene {
   group: THREE.Group;
   /** t is seconds elapsed since the scene started (or since it was detected, in AR mode). */
   update: (t: number) => void;
+  /** Raycaster must already have `.setFromCamera(ndc, camera)` called. Returns the nearest tappable element under it, if any. */
+  hitTest: (raycaster: THREE.Raycaster) => TapHit | null;
   dispose: () => void;
 }
 
@@ -16,7 +24,13 @@ interface SpriteEntry {
   mesh: THREE.Mesh;
   material: THREE.Material & { opacity: number };
   base: SpriteBase;
-  behavior: AnimationBehavior;
+  behavior: AnimationBehavior | AnimationBehavior[];
+}
+
+interface Tappable {
+  mesh: THREE.Object3D;
+  label: string;
+  meaning: string;
 }
 
 /**
@@ -37,6 +51,7 @@ export function buildPaintingScene(
   const waterMaterials: THREE.ShaderMaterial[] = [];
   const particleSystems: ParticleSystem[] = [];
   const loadedTextures: THREE.Texture[] = [];
+  const tappables: Tappable[] = [];
 
   for (const layer of config.layers) {
     const local = rectToLocal(layer.rect, aspect);
@@ -65,12 +80,13 @@ export function buildPaintingScene(
         phase: phaseFromId(layer.id),
       };
 
-      const behavior: AnimationBehavior = reducedMotion
+      const behavior: AnimationBehavior | AnimationBehavior[] = reducedMotion
         ? layer.reducedMotion ?? { type: "still" }
         : layer.animation;
 
       sprites.push({ mesh, material, base, behavior });
       group.add(mesh);
+      if (layer.meaning) tappables.push({ mesh, label: layer.label, meaning: layer.meaning });
       continue;
     }
 
@@ -83,6 +99,7 @@ export function buildPaintingScene(
       mesh.renderOrder = Math.round(depth * 1000);
       waterMaterials.push(material);
       group.add(mesh);
+      if (layer.meaning) tappables.push({ mesh, label: layer.label, meaning: layer.meaning });
       continue;
     }
 
@@ -110,6 +127,16 @@ export function buildPaintingScene(
     }
   }
 
+  function hitTest(raycaster: THREE.Raycaster): TapHit | null {
+    const meshes = tappables.map((t) => t.mesh);
+    const hits = raycaster.intersectObjects(meshes, false);
+    if (hits.length === 0) return null;
+    const hit = hits[0];
+    const tappable = tappables.find((t) => t.mesh === hit.object);
+    if (!tappable) return null;
+    return { label: tappable.label, meaning: tappable.meaning, point: hit.point };
+  }
+
   function dispose() {
     for (const texture of loadedTextures) texture.dispose();
     group.traverse((obj) => {
@@ -122,5 +149,5 @@ export function buildPaintingScene(
     });
   }
 
-  return { group, update, dispose };
+  return { group, update, hitTest, dispose };
 }
