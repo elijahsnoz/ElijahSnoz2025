@@ -3,8 +3,10 @@
 Elijah Snoz's personal AI music production laboratory. Version 1 (MVP) does one
 thing well: upload a demo, separate it into vocals/drums/bass/other with
 Demucs, and let you play or download every stem — no download required to
-listen. Marketed as a free stem splitter for fans, with AI mastering teased
-as "coming soon."
+listen. Marketed as a free stem splitter for fans. Two optional extras now sit
+on top of separation: Vocal FX (noise cleanup + pitch correction on the vocal
+stem, `ai-vocal-fx-backend`) and AI Mastering (rebuilds the full mix from the
+four stems and masters it, `ai-mastering-backend`).
 
 This app is **fully isolated** from the main `elijahsnoz.me` static site (a
 plain HTML/CSS/JS project at the repo root). It has its own `package.json`,
@@ -29,11 +31,22 @@ FastAPI service (../ai-music-backend)
 Local disk (storage/{job_id}/...)
 ```
 
-This repo has **two separate deployables**, siblings at the repo root:
+This repo has **four separate deployables**, siblings at the repo root:
 
 - `ai-music-lab/` — this Next.js app (deployed to its own Vercel project)
 - `ai-music-backend/` — the FastAPI + Demucs service (deployed to Render, see
   `/render.yaml`)
+- `ai-vocal-fx-backend/` — FastAPI service for vocal noise cleanup + pitch
+  correction, operating on a single vocal stem forwarded by the Next.js layer
+- `ai-mastering-backend/` — FastAPI service that sums the four Demucs stems
+  back into the full mix and masters it (bus EQ + compression, LUFS loudness
+  targeting, brick-wall limiting)
+
+`ai-vocal-fx-backend` and `ai-mastering-backend` are each their own deploy
+rather than living inside `ai-music-backend`, for the same reason: neither has
+a Demucs/torch dependency, so pinning `numpy<2` around torch's interop issue
+(see "Known compatibility notes" below) would be pure downside for them — a
+service with no torch has no reason to share a numpy pin with one that does.
 
 They are siblings, **not** nested, on purpose: Vercel's CLI actively scans a
 project directory for service manifests (a `requirements.txt` + Python
@@ -71,17 +84,23 @@ ai-music-lab/            (Next.js frontend — deployed to Vercel)
       upload/route.ts       proxies multipart upload to the backend
       process/route.ts      POST starts the job, GET polls its status
       download/route.ts     proxies stem/zip streaming (Range-request aware)
+    api/
+      vocal-fx/                process/status/download — proxy routes to ai-vocal-fx-backend
+      mastering/                process/status/download — proxy routes to ai-mastering-backend
   components/
     UploadSong.tsx           drag/drop + file picker + client-side validation
     ProgressBar.tsx           the Uploading → Separating → Analysing → Almost Finished → Done tracker
     AudioPlayer.tsx           play/pause/seek/duration, no download required
     StemCard.tsx              one stem: label + player + download button
     DownloadButton.tsx
+    VocalFxPanel.tsx           enhance toggle + retune slider + key picker, shown once stems are done
+    MasteringPanel.tsx         intensity preset picker, shown once stems are done
   lib/
-    types.ts, constants.ts    shared shape + copy, mirrored on the backend
+    types.ts, constants.ts    shared shape + copy, mirrored on the backends
     upload.ts                 validation, XHR upload w/ progress, polling, URL builders
+    vocalFx.ts, mastering.ts  same start/poll/download-URL shape as upload.ts, one per extra service
     audio.ts                  formatTime/formatBytes
-    backend.ts                 server-only BACKEND_URL
+    backend.ts                 server-only BACKEND_URL / VOCAL_FX_BACKEND_URL / MASTERING_BACKEND_URL
 
 ai-music-backend/         (FastAPI + Demucs — deployed to Render)
   app/
@@ -89,6 +108,18 @@ ai-music-backend/         (FastAPI + Demucs — deployed to Render)
     config.py, jobs.py, storage.py
     audio_validation.py       ffprobe-based validation (catches spoofed extensions)
     demucs_runner.py           runs Demucs as a subprocess, streams live progress
+  requirements.txt, Dockerfile, .dockerignore, .env.example
+
+ai-vocal-fx-backend/      (FastAPI — deployed to Railway)
+  app/
+    main.py                  FastAPI app: /upload /process /status /download
+    vocal_fx.py               denoise → pitch-correct (WORLD vocoder) → EQ/reverb → normalize
+  requirements.txt, Dockerfile, .dockerignore, .env.example
+
+ai-mastering-backend/     (FastAPI — deployed to Railway)
+  app/
+    main.py                  FastAPI app: /upload (4 stems) /process /status /download
+    mastering.py              sum stems → bus EQ/compression → LUFS match → limit
   requirements.txt, Dockerfile, .dockerignore, .env.example
 
 render.yaml                (repo root — Render Blueprint for ai-music-backend)
@@ -115,6 +146,24 @@ cp .env.example .env
 # Exclude .venv/storage from the reload watcher — job output files being
 # written during processing would otherwise trigger a reload mid-job:
 uvicorn app.main:app --reload --reload-exclude ".venv/*" --reload-exclude "storage/*" --port 8000
+```
+
+**Vocal FX backend** (optional — only needed to try that panel locally)
+
+```bash
+cd ai-vocal-fx-backend
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8001
+```
+
+**Mastering backend** (optional — only needed to try that panel locally)
+
+```bash
+cd ai-mastering-backend
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8002
 ```
 
 Open `http://localhost:3000/ai`. The first Demucs run downloads the
@@ -154,24 +203,48 @@ to one-click:
 works if you'd rather use Render instead: "New +" → "Blueprint" → connect
 this repo, same 2GB+ RAM requirement.
 
+**Vocal FX / Mastering backends (Railway)** — same one-click-ish flow as the
+Demucs backend, just a much smaller instance: neither has a Demucs/torch
+dependency, so no 2GB+ RAM requirement.
+
+1. railway.app → "New Project" → "Deploy from GitHub repo" → this repo.
+2. Set **Root Directory** to `ai-vocal-fx-backend` (or `ai-mastering-backend`)
+   — each has its own `railway.json` (Dockerfile build, `/health` healthcheck).
+3. Deploy, generate a public domain for each (Settings → Networking →
+   "Generate Domain").
+
 **Frontend (Vercel)** — deploy `ai-music-lab/` as its **own** Vercel project
 (Root Directory = `ai-music-lab`), separate from the main `elijahsnoz.me`
-project. Set `BACKEND_URL` in that project's environment variables to
-whichever backend URL you end up with above.
+project. Set `BACKEND_URL`, `VOCAL_FX_BACKEND_URL`, and `MASTERING_BACKEND_URL`
+in that project's environment variables to whichever backend URLs you end up
+with above.
 
 Once that project has a real domain, connect it to `elijahsnoz.me/ai` by
-adding a rewrite to the **existing** root `vercel.json` — this is the one
+adding rewrites to the **existing** root `vercel.json` — this is the one
 intentional touch point into the main site's config, and it's additive only
-(nothing else in that file changes):
+(nothing else in that file changes). The current `vercel.json` already has
+these wired up; when standing up a fresh deploy, the pattern to replicate is:
 
 ```jsonc
 {
   "rewrites": [
     { "source": "/ai", "destination": "https://<your-ai-lab-project>.vercel.app/ai" },
-    { "source": "/ai/:path*", "destination": "https://<your-ai-lab-project>.vercel.app/ai/:path*" }
+    { "source": "/ai/:path*", "destination": "https://<your-ai-lab-project>.vercel.app/ai/:path*" },
+    { "source": "/api/upload", "destination": "https://<your-ai-lab-project>.vercel.app/api/upload" },
+    { "source": "/api/process", "destination": "https://<your-ai-lab-project>.vercel.app/api/process" },
+    { "source": "/api/download", "destination": "https://<your-ai-lab-project>.vercel.app/api/download" },
+    { "source": "/api/vocal-fx/process", "destination": "https://<your-ai-lab-project>.vercel.app/api/vocal-fx/process" },
+    { "source": "/api/vocal-fx/status", "destination": "https://<your-ai-lab-project>.vercel.app/api/vocal-fx/status" },
+    { "source": "/api/vocal-fx/download", "destination": "https://<your-ai-lab-project>.vercel.app/api/vocal-fx/download" },
+    { "source": "/api/mastering/process", "destination": "https://<your-ai-lab-project>.vercel.app/api/mastering/process" },
+    { "source": "/api/mastering/status", "destination": "https://<your-ai-lab-project>.vercel.app/api/mastering/status" },
+    { "source": "/api/mastering/download", "destination": "https://<your-ai-lab-project>.vercel.app/api/mastering/download" }
   ]
 }
 ```
+
+Routes are listed explicitly rather than a `/api/*` catch-all so the main
+site can add its own `/api/*` routes later without collision.
 
 ## Security / validation
 
@@ -187,12 +260,21 @@ the authoritative check):
 
 ## What's intentionally NOT built yet
 
-Per the brief, this MVP is stem separation only. The architecture is left
-ready to grow into these without a rewrite, but none of it exists yet:
+Per the brief, this MVP started as stem separation only; vocal enhancement,
+pitch correction, and a first cut of mastering have since been added as
+panels on the same `/ai` page (not separate routes — see Architecture above).
+Still not built:
 
-- Routes: `/ai/pitch`, `/ai/producer`, `/ai/mastering`
-- Pitch/BPM/key detection, AI vocal enhancement, pitch correction, AI
-  mixing/mastering, instrument suggestions
+- Dedicated routes: `/ai/pitch`, `/ai/producer`, `/ai/mastering` — today
+  everything lives under the one `/ai` page as panels, not standalone routes
+- Pitch/BPM/key detection, instrument suggestions
+- Full AI *mixing* (per-track EQ/balance decisions across drums/bass/other,
+  not just the vocal stem and the mastering bus) — see
+  `docs/EMOTIONAL_MIXING.md` for a scoped-but-unbuilt design for one slice of
+  this (lyric-emotion-driven vocal mixing)
+- Reference-track mastering (matching another song's tonal balance/loudness)
+  — the current mastering is preset-based (gentle/balanced/loud), not
+  reference-driven
 - Persisting original demos, every revision, collaborators, AI changes,
   timestamps, and exported versions (the "creative archive") — this needs a
   real database (Supabase is the natural fit given the existing tech

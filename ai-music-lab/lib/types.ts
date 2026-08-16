@@ -33,3 +33,43 @@ export interface ValidationResult {
   valid: boolean;
   error?: string;
 }
+
+export type VocalFxStage = "queued" | "processing" | "done" | "error";
+
+export interface VocalFxOptions {
+  enhance: boolean;
+  retuneStrength: number;
+  key?: string;
+}
+
+export interface VocalFxStatusResponse {
+  jobId: string;
+  stage: VocalFxStage;
+  progress: number;
+  message?: string;
+  error?: string;
+}
+
+export interface VocalFxStartResponse {
+  vocalFxJobId: string;
+}
+
+export type MasteringIntensity = "gentle" | "balanced" | "loud";
+
+export type MasteringStage = "queued" | "mastering" | "done" | "error";
+
+export interface MasteringOptions {
+  intensity: MasteringIntensity;
+}
+
+export interface MasteringStatusResponse {
+  jobId: string;
+  stage: MasteringStage;
+  progress: number;
+  message?: string;
+  error?: string;
+}
+
+export interface MasteringStartResponse {
+  masteringJobId: string;
+}

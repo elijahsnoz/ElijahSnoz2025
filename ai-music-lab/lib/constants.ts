@@ -1,4 +1,4 @@
-import type { ProcessingStage, StemKey } from "./types";
+import type { MasteringIntensity, ProcessingStage, StemKey } from "./types";
 
 export const ACCEPTED_EXTENSIONS = [".mp3", ".wav", ".flac"] as const;
 
@@ -48,3 +48,19 @@ export const STAGE_ORDER: ProcessingStage[] = [
 ];
 
 export const JOB_POLL_INTERVAL_MS = 1500;
+
+const KEY_ROOTS = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+// Chromatic (no key) correction is always available as the default; these
+// are the optional restricted-scale choices for tighter correction.
+export const VOCAL_FX_KEYS: string[] = [
+  ...KEY_ROOTS.map((root) => `${root} major`),
+  ...KEY_ROOTS.map((root) => `${root} minor`),
+];
+
+// Fixed presets, not a bank of dials — mirrors ai-mastering-backend/app/mastering.py's PRESETS.
+export const MASTERING_INTENSITIES: { value: MasteringIntensity; label: string; description: string }[] = [
+  { value: "gentle", label: "Gentle", description: "Subtle glue, dynamics preserved (–16 LUFS)" },
+  { value: "balanced", label: "Balanced", description: "Radio-ready loudness (–12 LUFS)" },
+  { value: "loud", label: "Loud", description: "Competitive streaming loudness (–9 LUFS)" },
+];

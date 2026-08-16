@@ -5,6 +5,8 @@ import UploadSong from "@/components/UploadSong";
 import ProgressBar from "@/components/ProgressBar";
 import StemCard from "@/components/StemCard";
 import DownloadButton from "@/components/DownloadButton";
+import VocalFxPanel from "@/components/VocalFxPanel";
+import MasteringPanel from "@/components/MasteringPanel";
 import { buildDownloadUrl, pollJobStatus, startProcessing, uploadFile } from "@/lib/upload";
 import { STEM_ORDER } from "@/lib/constants";
 import type { ProcessingStage, StemResult } from "@/lib/types";
@@ -108,7 +110,7 @@ export default function AiMusicLabPage() {
           <div className="mt-12 w-full">
             <UploadSong onFileAccepted={handleFileAccepted} />
             <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.2em] text-text-muted">
-              Next in the Lab: Free AI Mastering — Coming Soon
+              Also in the Lab: Vocal FX &amp; AI Mastering
             </p>
           </div>
         )}
@@ -147,6 +149,11 @@ export default function AiMusicLabPage() {
                 if (!stem) return null;
                 return <StemCard key={key} stem={stem} songName={songName} />;
               })}
+            </div>
+
+            <div className="mt-4 flex flex-col gap-4">
+              <VocalFxPanel jobId={jobId} songName={songName} />
+              <MasteringPanel jobId={jobId} songName={songName} />
             </div>
 
             <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-between">

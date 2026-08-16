@@ -1,0 +1,10 @@
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30,<1.0
+python-multipart>=0.0.9
+
+pedalboard
+pyloudnorm
+
+# No numpy pin here on purpose: this service has no Demucs/torch, so there's
+# no numpy<2 vs numpy>=2 conflict to pin around (unlike ai-music-backend —
+# see that service's requirements.txt for why it pins numpy<2).
