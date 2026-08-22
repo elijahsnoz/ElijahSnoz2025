@@ -1,3 +1,4 @@
+import { PUBLIC_BACKEND_URL } from "./backend";
 import {
   ACCEPTED_EXTENSIONS,
   FILE_TOO_LARGE_MESSAGE,
@@ -26,7 +27,13 @@ export function validateAudioFile(file: File): ValidationResult {
   return { valid: true };
 }
 
-/** Uploads with real progress events (fetch cannot report upload progress). */
+/**
+ * Uploads with real progress events (fetch cannot report upload progress).
+ *
+ * Goes straight to the backend rather than through /api/upload: Vercel caps
+ * a serverless function's request body at ~4.5MB, which most real songs
+ * exceed, so proxying the file bytes through Next.js isn't an option here.
+ */
 export function uploadFile(file: File, onProgress: (percent: number) => void): Promise<UploadResponse> {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -42,7 +49,8 @@ export function uploadFile(file: File, onProgress: (percent: number) => void): P
     xhr.addEventListener("load", () => {
       if (xhr.status >= 200 && xhr.status < 300) {
         try {
-          resolve(JSON.parse(xhr.responseText));
+          const data = JSON.parse(xhr.responseText);
+          resolve({ jobId: data.job_id });
         } catch {
           reject(new Error("Unexpected response from server."));
         }
@@ -59,7 +67,7 @@ export function uploadFile(file: File, onProgress: (percent: number) => void): P
     xhr.addEventListener("error", () => reject(new Error("Upload failed. Check your connection.")));
     xhr.addEventListener("abort", () => reject(new Error("Upload cancelled.")));
 
-    xhr.open("POST", "/api/upload");
+    xhr.open("POST", `${PUBLIC_BACKEND_URL}/upload`);
     xhr.send(formData);
   });
 }

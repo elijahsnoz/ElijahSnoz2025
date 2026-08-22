@@ -20,9 +20,12 @@ changed to build this.
 
 ```
 Browser
-  │  (same-origin fetch, no CORS needed)
+  │  (1) POST /upload straight to the backend — NEXT_PUBLIC_BACKEND_URL, CORS-enabled.
+  │      Vercel caps a serverless function's request body at ~4.5MB, well under a
+  │      real song, so the raw file can't be proxied through Next.js like everything else.
+  │  (2) process/status/download — same-origin fetch to Next.js
   ▼
-Next.js App Router  ──app/ai/page.tsx (UI) + app/api/* (thin proxy routes)
+Next.js App Router  ──app/ai/page.tsx (UI) + app/api/* (thin proxy routes for 2)
   │  (server-to-server fetch, BACKEND_URL env var, never exposed to the client)
   ▼
 FastAPI service (../ai-music-backend)
@@ -64,7 +67,11 @@ the backend out of the directory tree Vercel's CLI walks.
 - **Why does the frontend proxy through `/api/*` instead of calling the
   backend directly?** So the backend's URL is never exposed to the browser,
   and so this page can later add auth/rate-limiting at the Next.js layer
-  without touching the backend.
+  without touching the backend. The one exception is `/upload`: Vercel caps
+  a serverless function's request body at ~4.5MB, which most real songs
+  exceed, so the browser uploads the raw file straight to the backend
+  (`NEXT_PUBLIC_BACKEND_URL`, CORS-enabled via `ALLOWED_ORIGINS` on the
+  backend) and only that one endpoint's URL is public.
 - **Job store is in-memory** (`ai-music-backend/app/jobs.py`). Fine for a
   single instance MVP. The first thing to change when this needs to scale
   past one backend instance, or persist upload history, is swapping that for
@@ -81,7 +88,6 @@ ai-music-lab/            (Next.js frontend — deployed to Vercel)
       layout.tsx           <ai>-scoped metadata + SEO (title/description/JSON-LD)
       page.tsx              the AI Music Lab page (hero + upload + progress + stems)
     api/
-      upload/route.ts       proxies multipart upload to the backend
       process/route.ts      POST starts the job, GET polls its status
       download/route.ts     proxies stem/zip streaming (Range-request aware)
     api/
@@ -100,7 +106,8 @@ ai-music-lab/            (Next.js frontend — deployed to Vercel)
     upload.ts                 validation, XHR upload w/ progress, polling, URL builders
     vocalFx.ts, mastering.ts  same start/poll/download-URL shape as upload.ts, one per extra service
     audio.ts                  formatTime/formatBytes
-    backend.ts                 server-only BACKEND_URL / VOCAL_FX_BACKEND_URL / MASTERING_BACKEND_URL
+    backend.ts                 server-only BACKEND_URL / VOCAL_FX_BACKEND_URL / MASTERING_BACKEND_URL,
+                                plus public PUBLIC_BACKEND_URL (browser upload only)
 
 ai-music-backend/         (FastAPI + Demucs — deployed to Render)
   app/
@@ -198,6 +205,9 @@ to one-click:
    anything smaller.
 4. Deploy, then note the generated public domain (Settings → Networking →
    "Generate Domain"), e.g. `https://ai-music-backend-production.up.railway.app`.
+5. Set `ALLOWED_ORIGINS` on this service to the frontend's real origin(s)
+   (e.g. `https://elijahsnoz.me`) — the browser calls `/upload` on this
+   domain directly, so CORS must allow it.
 
 **Backend (Render — alternative)** — `render.yaml` at the repo root still
 works if you'd rather use Render instead: "New +" → "Blueprint" → connect
@@ -217,7 +227,8 @@ dependency, so no 2GB+ RAM requirement.
 (Root Directory = `ai-music-lab`), separate from the main `elijahsnoz.me`
 project. Set `BACKEND_URL`, `VOCAL_FX_BACKEND_URL`, and `MASTERING_BACKEND_URL`
 in that project's environment variables to whichever backend URLs you end up
-with above.
+with above, plus `NEXT_PUBLIC_BACKEND_URL` (same value as `BACKEND_URL` — the
+browser needs this one to upload directly, see Architecture above).
 
 Once that project has a real domain, connect it to `elijahsnoz.me/ai` by
 adding rewrites to the **existing** root `vercel.json` — this is the one
@@ -230,7 +241,6 @@ these wired up; when standing up a fresh deploy, the pattern to replicate is:
   "rewrites": [
     { "source": "/ai", "destination": "https://<your-ai-lab-project>.vercel.app/ai" },
     { "source": "/ai/:path*", "destination": "https://<your-ai-lab-project>.vercel.app/ai/:path*" },
-    { "source": "/api/upload", "destination": "https://<your-ai-lab-project>.vercel.app/api/upload" },
     { "source": "/api/process", "destination": "https://<your-ai-lab-project>.vercel.app/api/process" },
     { "source": "/api/download", "destination": "https://<your-ai-lab-project>.vercel.app/api/download" },
     { "source": "/api/vocal-fx/process", "destination": "https://<your-ai-lab-project>.vercel.app/api/vocal-fx/process" },
@@ -249,8 +259,8 @@ site can add its own `/api/*` routes later without collision.
 ## Security / validation
 
 Enforced both client-side (`lib/upload.ts`, immediate feedback) and
-server-side (`app/api/upload/route.ts` and `ai-music-backend/app/main.py`,
-the authoritative check):
+server-side (`ai-music-backend/app/main.py`, the authoritative check — the
+browser talks to it directly for `/upload`, so this is the only backstop):
 
 - Extension allow-list: `.mp3`, `.wav`, `.flac`
 - Max upload size: 60MB (`MAX_FILE_SIZE_BYTES`, mirrored in both layers)

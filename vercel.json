@@ -5,7 +5,6 @@
     { "source": "/studio", "destination": "/studio.html" },
     { "source": "/ai", "destination": "https://ai-music-lab-sooty.vercel.app/ai" },
     { "source": "/ai/:path*", "destination": "https://ai-music-lab-sooty.vercel.app/ai/:path*" },
-    { "source": "/api/upload", "destination": "https://ai-music-lab-sooty.vercel.app/api/upload" },
     { "source": "/api/process", "destination": "https://ai-music-lab-sooty.vercel.app/api/process" },
     { "source": "/api/download", "destination": "https://ai-music-lab-sooty.vercel.app/api/download" },
     { "source": "/api/vocal-fx/process", "destination": "https://ai-music-lab-sooty.vercel.app/api/vocal-fx/process" },

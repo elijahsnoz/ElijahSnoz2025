@@ -2,8 +2,10 @@ FROM python:3.11-slim
 
 # build-essential provides the C compiler pyworld needs to build its
 # extension at install time (python:3.11-slim has none by default).
+# libatomic1 is needed at runtime by pedalboard's compiled extension
+# (pedalboard_native), which links against libatomic.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends build-essential \
+    && apt-get install -y --no-install-recommends build-essential libatomic1 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

@@ -1,5 +1,11 @@
 FROM python:3.11-slim
 
+# pedalboard's compiled extension (pedalboard_native) links against
+# libatomic, which python:3.11-slim doesn't ship.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libatomic1 \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 COPY requirements.txt .

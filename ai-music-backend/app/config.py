@@ -9,5 +9,17 @@ MAX_FILE_SIZE_BYTES = int(os.getenv("MAX_FILE_SIZE_BYTES", 60 * 1024 * 1024))
 STORAGE_DIR = Path(os.getenv("STORAGE_DIR", "storage")).resolve()
 DEMUCS_MODEL = os.getenv("DEMUCS_MODEL", "htdemucs")
 
+# The browser uploads directly to this service (bypassing the Next.js proxy,
+# which would otherwise cap uploads at Vercel's ~4.5MB serverless function
+# body limit), so real CORS is required here. Comma-separated origins.
+ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "ALLOWED_ORIGINS",
+        "https://elijahsnoz.me,http://localhost:3000",
+    ).split(",")
+    if origin.strip()
+]
+
 UNSUPPORTED_FORMAT_MESSAGE = "Unsupported file format. Please upload: MP3, WAV, or FLAC."
 FILE_TOO_LARGE_MESSAGE = f"File is too large. Maximum size is {MAX_FILE_SIZE_BYTES // (1024 * 1024)}MB."

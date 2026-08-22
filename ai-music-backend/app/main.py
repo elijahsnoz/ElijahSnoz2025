@@ -5,12 +5,14 @@ import zipfile
 from pathlib import Path
 
 from fastapi import BackgroundTasks, FastAPI, File, HTTPException, Request, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 
 from . import storage
 from .audio_validation import InvalidAudioError, probe_audio
 from .config import (
     ALLOWED_EXTENSIONS,
+    ALLOWED_ORIGINS,
     DEMUCS_MODEL,
     FILE_TOO_LARGE_MESSAGE,
     MAX_FILE_SIZE_BYTES,
@@ -23,6 +25,13 @@ from .jobs import create_job, get_job, update_job
 logger = logging.getLogger("ai_music_lab")
 
 app = FastAPI(title="AI Music Lab — Stem Separation Service")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_methods=["POST", "GET"],
+    allow_headers=["*"],
+)
 
 
 @app.exception_handler(HTTPException)
