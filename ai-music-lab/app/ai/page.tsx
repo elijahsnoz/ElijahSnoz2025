@@ -11,6 +11,21 @@ import { buildDownloadUrl, pollJobStatus, startProcessing, uploadFile } from "@/
 import { STEM_ORDER } from "@/lib/constants";
 import type { ProcessingStage, StemResult } from "@/lib/types";
 
+const STUDIO_TOOLS = [
+  {
+    name: "Stem Splitter",
+    description: "Separate any song into vocals, drums, bass and instrumentals.",
+  },
+  {
+    name: "AI Mastering",
+    description: "Master the mix to gentle, balanced or loud streaming targets.",
+  },
+  {
+    name: "Vocal Tuning",
+    description: "Pitch-correct the vocal chromatically or to a chosen key.",
+  },
+];
+
 export default function AiMusicLabPage() {
   const [stage, setStage] = useState<ProcessingStage>("idle");
   const [progress, setProgress] = useState(0);
@@ -96,12 +111,12 @@ export default function AiMusicLabPage() {
         <p className="mt-6 font-mono text-xs uppercase tracking-[0.25em] text-violet">Elijah Snoz AI Music Lab</p>
 
         <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-text sm:text-5xl">
-          Free AI Stem Splitter
+          Free AI Music Studio
         </h1>
 
         <p className="mt-6 max-w-xl text-balance text-base leading-relaxed text-text-soft sm:text-lg">
-          A free gift from Elijah Snoz to fans and fellow creators. Upload any song and instantly separate
-          vocals, drums, bass, and instrumentals — powered by AI, no signup required.
+          A free gift from Elijah Snoz to fans and fellow creators. Upload one song and the Lab splits it into
+          stems, masters it to streaming loudness, and tunes the vocal — powered by AI, no signup required.
         </p>
 
         <p className="mt-3 font-display italic text-text-muted">Preserve your first idea.</p>
@@ -109,8 +124,22 @@ export default function AiMusicLabPage() {
         {stage === "idle" && (
           <div className="mt-12 w-full">
             <UploadSong onFileAccepted={handleFileAccepted} />
+
+            {/* Rendered in the idle state on purpose: the three tools otherwise
+                only appear after a separation finishes, so neither a first-time
+                visitor nor a crawler would ever see what the Lab actually does.
+                Order matches JSON_LD featureList in ./layout.tsx. */}
+            <ul className="mt-12 grid gap-4 text-left sm:grid-cols-3">
+              {STUDIO_TOOLS.map((tool) => (
+                <li key={tool.name} className="rounded-2xl border border-glass px-5 py-4">
+                  <h2 className="font-display text-sm font-semibold text-text">{tool.name}</h2>
+                  <p className="mt-2 text-sm leading-relaxed text-text-soft">{tool.description}</p>
+                </li>
+              ))}
+            </ul>
+
             <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.2em] text-text-muted">
-              Also in the Lab: Vocal FX &amp; AI Mastering
+              Upload once — mastering &amp; vocal tuning unlock after the split
             </p>
           </div>
         )}
