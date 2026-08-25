@@ -1,43 +1,128 @@
 {
   "cleanUrls": false,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/art.html",
+      "destination": "/#gallery",
+      "statusCode": 301
+    },
+    {
+      "source": "/music.html",
+      "destination": "/#music",
+      "statusCode": 301
+    },
+    {
+      "source": "/contact.html",
+      "destination": "/#connect",
+      "statusCode": 301
+    }
+  ],
   "rewrites": [
-    { "source": "/studio", "destination": "/studio.html" },
-    { "source": "/ai", "destination": "https://ai-music-lab-sooty.vercel.app/ai" },
-    { "source": "/ai/:path*", "destination": "https://ai-music-lab-sooty.vercel.app/ai/:path*" },
-    { "source": "/api/process", "destination": "https://ai-music-lab-sooty.vercel.app/api/process" },
-    { "source": "/api/download", "destination": "https://ai-music-lab-sooty.vercel.app/api/download" },
-    { "source": "/api/vocal-fx/process", "destination": "https://ai-music-lab-sooty.vercel.app/api/vocal-fx/process" },
-    { "source": "/api/vocal-fx/status", "destination": "https://ai-music-lab-sooty.vercel.app/api/vocal-fx/status" },
-    { "source": "/api/vocal-fx/download", "destination": "https://ai-music-lab-sooty.vercel.app/api/vocal-fx/download" },
-    { "source": "/api/mastering/process", "destination": "https://ai-music-lab-sooty.vercel.app/api/mastering/process" },
-    { "source": "/api/mastering/status", "destination": "https://ai-music-lab-sooty.vercel.app/api/mastering/status" },
-    { "source": "/api/mastering/download", "destination": "https://ai-music-lab-sooty.vercel.app/api/mastering/download" },
-    { "source": "/_next/:path*", "destination": "https://ai-music-lab-sooty.vercel.app/_next/:path*" },
-    { "source": "/ar", "destination": "https://ajayi-ar.vercel.app/ar" },
-    { "source": "/ar/:path*", "destination": "https://ajayi-ar.vercel.app/ar/:path*" },
-    { "source": "/art", "destination": "https://ajayi-ar.vercel.app/art" },
-    { "source": "/art/:path*", "destination": "https://ajayi-ar.vercel.app/art/:path*" },
-    { "source": "/targets/:path*", "destination": "https://ajayi-ar.vercel.app/targets/:path*" },
-    { "source": "/layers/:path*", "destination": "https://ajayi-ar.vercel.app/layers/:path*" },
-    { "source": "/artworks/:path*", "destination": "https://ajayi-ar.vercel.app/artworks/:path*" },
-    { "source": "/audio/:path*", "destination": "https://ajayi-ar.vercel.app/audio/:path*" }
+    {
+      "source": "/studio",
+      "destination": "/studio.html"
+    },
+    {
+      "source": "/ai",
+      "destination": "https://ai-music-lab-sooty.vercel.app/ai"
+    },
+    {
+      "source": "/ai/:path*",
+      "destination": "https://ai-music-lab-sooty.vercel.app/ai/:path*"
+    },
+    {
+      "source": "/api/process",
+      "destination": "https://ai-music-lab-sooty.vercel.app/api/process"
+    },
+    {
+      "source": "/api/download",
+      "destination": "https://ai-music-lab-sooty.vercel.app/api/download"
+    },
+    {
+      "source": "/api/vocal-fx/process",
+      "destination": "https://ai-music-lab-sooty.vercel.app/api/vocal-fx/process"
+    },
+    {
+      "source": "/api/vocal-fx/status",
+      "destination": "https://ai-music-lab-sooty.vercel.app/api/vocal-fx/status"
+    },
+    {
+      "source": "/api/vocal-fx/download",
+      "destination": "https://ai-music-lab-sooty.vercel.app/api/vocal-fx/download"
+    },
+    {
+      "source": "/api/mastering/process",
+      "destination": "https://ai-music-lab-sooty.vercel.app/api/mastering/process"
+    },
+    {
+      "source": "/api/mastering/status",
+      "destination": "https://ai-music-lab-sooty.vercel.app/api/mastering/status"
+    },
+    {
+      "source": "/api/mastering/download",
+      "destination": "https://ai-music-lab-sooty.vercel.app/api/mastering/download"
+    },
+    {
+      "source": "/_next/:path*",
+      "destination": "https://ai-music-lab-sooty.vercel.app/_next/:path*"
+    },
+    {
+      "source": "/ar",
+      "destination": "https://ajayi-ar.vercel.app/ar"
+    },
+    {
+      "source": "/ar/:path*",
+      "destination": "https://ajayi-ar.vercel.app/ar/:path*"
+    },
+    {
+      "source": "/art",
+      "destination": "https://ajayi-ar.vercel.app/art"
+    },
+    {
+      "source": "/art/:path*",
+      "destination": "https://ajayi-ar.vercel.app/art/:path*"
+    },
+    {
+      "source": "/targets/:path*",
+      "destination": "https://ajayi-ar.vercel.app/targets/:path*"
+    },
+    {
+      "source": "/layers/:path*",
+      "destination": "https://ajayi-ar.vercel.app/layers/:path*"
+    },
+    {
+      "source": "/artworks/:path*",
+      "destination": "https://ajayi-ar.vercel.app/artworks/:path*"
+    },
+    {
+      "source": "/audio/:path*",
+      "destination": "https://ajayi-ar.vercel.app/audio/:path*"
+    }
   ],
   "headers": [
     {
       "source": "/(.*)\\.(jpg|jpeg|png|gif|svg|webp|ico|mp4|mp3|pdf|woff2)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/(.*)\\.html",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
       ]
     }
   ],
   "functions": {
-    "api/snoz-studio/generate-image.js": { "maxDuration": 30 }
+    "api/snoz-studio/generate-image.js": {
+      "maxDuration": 30
+    }
   }
 }

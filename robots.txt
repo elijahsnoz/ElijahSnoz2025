@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /analytics-dashboard.html
+Disallow: /studio.html
+Disallow: /studio
 
 Sitemap: https://elijahsnoz.me/sitemap.xml
